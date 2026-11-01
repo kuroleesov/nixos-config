@@ -1,5 +1,5 @@
 # софт из repinek/nixos-dotfiles поверх конфига pc-1 (Home Manager)
-{ inputs, ... }:
+{ inputs, pkgs, ... }:
 
 {
   imports = [
@@ -8,7 +8,6 @@
 
     ../repinek/modules/cli/beets/user.nix
     ../repinek/modules/cli/fastfetch/user.nix
-    ../repinek/modules/cli/gh/user.nix
     ../repinek/modules/cli/gpg/user.nix
     ../repinek/modules/cli/scrcpy/user.nix
 
@@ -47,10 +46,12 @@
     ../repinek/modules/shell/fish/user.nix
   ];
 
+  # Только пакет: модуль gh из дотфайлов заменил бы твой ~/.config/gh/config.yml
+  home.packages = [ pkgs.gh ];
+
   modules.cli = {
     beets.user.enable = true;
     fastfetch.user.enable = true;
-    gh.user.enable = true;
     gpg.user.enable = true;
     scrcpy.user.enable = true;
   };
