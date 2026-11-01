@@ -10,6 +10,7 @@
     sl
     amnezia-vpn
     mpv
+    cava # раньше приходил вместе с Dux
     cmatrix
     vscode
     unstable.claude-code
