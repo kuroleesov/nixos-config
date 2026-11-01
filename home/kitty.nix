@@ -40,7 +40,7 @@
       # --- звук и уведомления ---
       enable_audio_bell = "no";
       window_alert_on_bell = "yes";
-      # Уведомление (в DMS), если команда шла дольше 15 с, а окно kitty было скрыто
+      # Уведомление (в Noctalia), если команда шла дольше 15 с, а окно kitty было скрыто
       notify_on_cmd_finish = "invisible 15.0";
 
       # --- отзывчивость ---
@@ -102,10 +102,9 @@
         "launch --type=overlay --stdin-source=@screen_scrollback --stdin-add-formatting=no fzf --no-sort --no-mouse --exact -i --tac";
     };
 
-    # Цвета под обои генерирует DMS (matugen). Пока файлов нет, kitty просто их пропускает.
+    # Цвета генерирует Noctalia (repinek/modules/desktop/noctalia/templates/kitty.nix). Пока файла нет, kitty его пропускает.
     extraConfig = ''
-      include dank-theme.conf
-      include dank-tabs.conf
+      include themes/noctalia.conf
     '';
   };
 

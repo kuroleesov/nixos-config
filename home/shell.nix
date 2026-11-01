@@ -118,11 +118,9 @@ in
     gb = "git branch";
     lg = "lazygit";
 
-    # --- Hyprland / DMS ---
+    # --- Hyprland ---
     hr = "hyprctl reload";
     hconf = "$EDITOR ${flake}/home/hypr/hyprland.lua";
-    dmsr = "systemctl --user restart dms";
-    dmslog = "journalctl --user -fu dms";
     clients = "hyprctl clients";
   };
 
@@ -181,7 +179,7 @@ in
     enableCompletion = true;
   };
 
-  # Красивый быстрый промпт: «таблетки» в цветах палитры терминала (kitty/DMS)
+  # Красивый быстрый промпт: «таблетки» в цветах палитры терминала (kitty)
   programs.starship = {
     enable = true;
     settings = {
