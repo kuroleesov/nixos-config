@@ -42,7 +42,6 @@ in
   services.power-profiles-daemon.enable = true;
   services.upower.enable = true;
   services.gnome.gnome-keyring.enable = true;
-  security.pam.services.ly.enableGnomeKeyring = true;
   security.polkit.enable = true;
 
   xdg.portal = {

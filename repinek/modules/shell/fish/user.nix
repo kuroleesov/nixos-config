@@ -13,7 +13,8 @@ in {
     programs.fish = {
       enable = true;
 
-      inherit shellAliases;
+      # home.shellAliases из home/shell.nix тоже попадают в fish; в fish приоритет у этих
+      shellAliases = mapAttrs (_: mkForce) shellAliases;
 
       functions = {
         # Run Fastfetch as the greeting

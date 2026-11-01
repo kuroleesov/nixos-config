@@ -26,7 +26,6 @@ in {
         "everforest" # Everforest Theme
         "rose-pine-theme" # Rose Pine
 
-        # Etc
       ];
 
       # These keys so weird sometimes...
