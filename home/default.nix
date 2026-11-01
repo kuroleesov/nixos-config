@@ -6,6 +6,7 @@
     ./shell.nix
     ./kitty.nix
     ./hyprland.nix
+    ./repinek.nix
   ];
 
   home.username = user;

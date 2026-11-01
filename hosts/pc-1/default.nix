@@ -8,6 +8,7 @@
     ../../modules/desktop.nix
     ../../modules/packages.nix
     ../../modules/disks.nix
+    ./repinek.nix
   ];
 
   # Bootloader
@@ -79,7 +80,7 @@
     };
   };
 
-  # Bluetooth (DMS умеет им управлять)
+  # Bluetooth (управляется из Noctalia)
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
 
