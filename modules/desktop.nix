@@ -1,14 +1,10 @@
 {
-  inputs,
   pkgs,
-  user,
   ...
 }:
 
 let
-  unstableModules = "${inputs.nixpkgs-unstable}/nixos/modules";
-
-  # Шрифт Dux Shell по умолчанию; в nixpkgs его нет, а пакет dux-shell свой экземпляр не кладёт
+  # шрифт интерфейса по умолчанию; в nixpkgs его нет
   google-sans-flex = pkgs.runCommand "google-sans-flex" { } ''
     install -Dm444 ${
       pkgs.fetchurl {
@@ -20,18 +16,8 @@ let
   '';
 in
 {
-  # Модули Dux Shell из unstable (в 26.05 ещё старые dms-shell/dms-greeter, они конфликтуют с новыми)
-  disabledModules = [
-    "programs/wayland/dms-shell.nix"
-    "services/display-managers/dms-greeter.nix"
-  ];
-  imports = [
-    "${unstableModules}/programs/wayland/dux-shell.nix"
-    "${unstableModules}/services/display-managers/dux-greeter.nix"
-  ];
-
   # Hyprland через UWSM: правильно поднимает graphical-session.target,
-  # от которого стартует systemd-сервис Dux Shell (dms.service).
+  # от которого стартует systemd-сервис Noctalia.
   programs.hyprland = {
     enable = true;
     # 0.55.4 из stable падает в layoutMinSize; берём свежий из unstable
@@ -41,21 +27,6 @@ in
     xwayland.enable = true;
   };
 
-  # Dux Shell (бывший DankMaterialShell)
-  programs.dux-shell = {
-    enable = true;
-    systemd = {
-      enable = true;
-      restartIfChanged = true;
-    };
-  };
-
-  # Экран входа Dux Greeter (greetd) вместо SDDM; подтягивает обои и тему из Dux Shell
-  services.displayManager.dux-greeter = {
-    enable = true;
-    compositor.name = "hyprland";
-    configHome = "/home/${user}";
-  };
   services.displayManager.defaultSession = "hyprland-uwsm";
 
   # KDE Plasma оставлен запасной сессией (выбирается на экране входа).
@@ -67,11 +38,11 @@ in
     options = "grp:alt_shift_toggle";
   };
 
-  # Всё, что ждёт DMS и Hyprland
+  # Всё, что ждут Noctalia и Hyprland
   services.power-profiles-daemon.enable = true;
   services.upower.enable = true;
   services.gnome.gnome-keyring.enable = true;
-  security.pam.services.dms-greeter.enableGnomeKeyring = true;
+  security.pam.services.ly.enableGnomeKeyring = true;
   security.polkit.enable = true;
 
   xdg.portal = {
