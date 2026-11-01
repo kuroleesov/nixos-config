@@ -5,7 +5,6 @@
   environment.variables.NIXPKGS_ALLOW_UNFREE = "1";
 
   # pkgs.unstable.<пакет> — свежие версии из nixos-unstable.
-  # Dux Shell (бывший DankMaterialShell) берём оттуда целиком: в 26.05 он старый (dms-shell 1.4).
   nixpkgs.overlays = [
     (final: prev: {
       unstable = import inputs.nixpkgs-unstable {
@@ -14,7 +13,9 @@
       };
     })
     (final: prev: {
-      inherit (final.unstable) dux-shell dux-greeter quickshell;
+      # Noctalia v5: в 26.05 старая 5.0, дотфайлы рассчитаны на версию из unstable
+      inherit (final.unstable) noctalia;
+      il2cpp-inspector-redux = final.callPackage ../repinek/pkgs/il2cpp-inspector-redux { };
     })
   ];
 

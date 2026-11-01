@@ -1,5 +1,5 @@
 {
-  description = "NixOS: Hyprland + Dux Shell";
+  description = "NixOS: Hyprland + Noctalia Shell";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
@@ -8,6 +8,12 @@
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Модуль programs.noctalia есть только в master Home Manager, в release-26.05 его нет
+    home-manager-unstable = {
+      url = "github:nix-community/home-manager";
+      flake = false;
     };
 
     claude-desktop = {
@@ -19,6 +25,16 @@
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    firefox-addons = {
+      url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    osu-lazer = {
+      url = "github:repinek/osu-lazer-flake";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
 
