@@ -6,9 +6,12 @@ NixOS + Home Manager: Hyprland, Noctalia Shell, fish. Один flake на все
 
 Нужна NixOS: уже установленная (любой вариант с экрана установщика) или live-образ.
 
+Репозиторий приватный, поэтому сначала вход в GitHub (`gh auth login` откроет код для входа в браузере):
+
 ```bash
-nix-shell -p git
-git clone <адрес-репозитория> ~/nixos-config
+nix-shell -p git gh
+gh auth login
+gh repo clone kuroleesov/nixos-config ~/nixos-config
 cd ~/nixos-config
 ./install.sh
 ```
