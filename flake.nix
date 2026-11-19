@@ -37,28 +37,38 @@
     { self, nixpkgs, ... }@inputs:
     let
       system = "x86_64-linux";
-      user = "pc-1";
+      lib = nixpkgs.lib;
       pkgs = nixpkgs.legacyPackages.${system};
+
+      # Компьютер = папка в hosts/ (default.nix, hardware-configuration.nix, meta.nix); новые создаёт install.sh
+      hosts = lib.attrNames (lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./hosts));
+
+      mkHost =
+        host:
+        let
+          inherit (import ./hosts/${host}/meta.nix) user;
+        in
+        lib.nixosSystem {
+          inherit system;
+          specialArgs = { inherit inputs user; };
+          modules = [
+            ./hosts/${host}
+            inputs.claude-desktop.nixosModules.default
+            inputs.home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                backupFileExtension = "hm-backup";
+                extraSpecialArgs = { inherit inputs user; };
+                users.${user} = import ./home;
+              };
+            }
+          ];
+        };
     in
     {
-      nixosConfigurations.pc-1 = nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit inputs user; };
-        modules = [
-          ./hosts/pc-1
-          inputs.claude-desktop.nixosModules.default
-          inputs.home-manager.nixosModules.home-manager
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              backupFileExtension = "hm-backup";
-              extraSpecialArgs = { inherit inputs user; };
-              users.${user} = import ./home;
-            };
-          }
-        ];
-      };
+      nixosConfigurations = lib.genAttrs hosts mkHost;
 
       formatter.${system} = pkgs.nixfmt;
 

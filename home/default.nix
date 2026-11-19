@@ -1,12 +1,17 @@
-{ inputs, user, ... }:
+# Home Manager: всё, что лежит в домашней папке пользователя (~/.config и пакеты пользователя)
+{ user, osConfig, ... }:
 
 {
   imports = [
-    inputs.nix-index-database.homeModules.nix-index
-    ./shell.nix
-    ./kitty.nix
-    ./hyprland.nix
-    ./repinek.nix
+    ./shell
+    ./desktop
+    ./terminals.nix
+    ./editors.nix
+    ./browsers
+    ./apps.nix
+    ./media.nix
+    ./games.nix
+    ./cli.nix
   ];
 
   home.username = user;
@@ -14,5 +19,6 @@
 
   programs.home-manager.enable = true;
 
-  home.stateVersion = "26.05";
+  # Как у системы: на новом компьютере install.sh ставит версию NixOS на момент установки
+  home.stateVersion = osConfig.system.stateVersion;
 }
