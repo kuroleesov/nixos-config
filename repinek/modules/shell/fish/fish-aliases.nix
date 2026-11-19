@@ -14,14 +14,13 @@ in {
   nix-gc = "sudo nix-store --gc";
 
   # Replace ls and tree with eza (a = all, l = long)
-  ls = "eza -al --color=always --group-directories-first --icons=always";
-  la = "eza -a  --color=always --group-directories-first --icons=always";
-  lt = "eza -aT --color=always --group-directories-first --icons=always";
+  ls = "eza -al --color=auto --group-directories-first --icons=auto";
+  la = "eza -a  --color=auto --group-directories-first --icons=auto";
+  lt = "eza -aT --color=auto --group-directories-first --icons=auto";
   ld = "eza -a  --color=never | rg '^\\.'";
   tree = "lt";
 
-  # Replace grep with ripgrep
-  grep = "rg";
+  # ripgrep shortcuts
   rgi = "rg --ignore-case";
   rgl = "rg --files-with-matches";
 
@@ -32,7 +31,7 @@ in {
   rme = "trash empty";
 
   # Replace cat with bat
-  cat = "bat --color=always --wrap=never --plain";
+  cat = "bat --paging=never --wrap=never --plain";
 
   # Archive helpers
   untar = "tar -axvf";

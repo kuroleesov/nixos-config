@@ -2,18 +2,13 @@
   description = "NixOS: Hyprland + Noctalia Shell";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # 26.11 (Zokor) ещё не вышла: nixos-unstable; на 26.11 заменить на nixos-26.11 и release-26.11
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.follows = "nixpkgs";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-26.05";
+      url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # Модуль programs.noctalia есть только в master Home Manager, в release-26.05 его нет
-    home-manager-unstable = {
-      url = "github:nix-community/home-manager";
-      flake = false;
     };
 
     claude-desktop = {

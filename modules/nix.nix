@@ -2,6 +2,8 @@
 
 {
   nixpkgs.config.allowUnfree = true;
+  # claude-desktop тянет electron 42 (EOL в nixpkgs); убрать, когда модуль перейдёт на новый electron
+  nixpkgs.config.permittedInsecurePackages = [ "electron-42.11.18" ];
   environment.variables.NIXPKGS_ALLOW_UNFREE = "1";
 
   # pkgs.unstable.<пакет> — свежие версии из nixos-unstable.
@@ -10,6 +12,22 @@
       unstable = import inputs.nixpkgs-unstable {
         inherit (final.stdenv.hostPlatform) system;
         config.allowUnfree = true;
+        overlays = [
+          (f: p: {
+            # Сломано в nixpkgs, убрать, когда починят: новый hatchling требует tomlkit, которого нет
+            # в офлайн-наборе колёс anki, а cargo-хук теперь берёт zstd/sqlite/lzma/openssl из системы
+            anki = p.anki.overrideAttrs (old: {
+              nativeBuildInputs = old.nativeBuildInputs ++ [ f.pkg-config ];
+              buildInputs = old.buildInputs ++ [ f.zstd f.sqlite f.xz f.openssl ];
+              env = old.env // {
+                UV_FIND_LINKS = f.symlinkJoin {
+                  name = "uv-wheels";
+                  paths = [ old.env.UV_FIND_LINKS p.anki.python.pkgs.tomlkit.dist ];
+                };
+              };
+            });
+          })
+        ];
       };
     })
     (final: prev: {

@@ -9,7 +9,7 @@ return {
 
     file_manager = "nemo",
     terminal = "alacritty",
-    browser = "librewolf",
+    browser = "firefox",
 
     hyprpicker = "hyprpicker --autocopy --no-fancy --render-inactive --scale=8",
     hyprshot_region = mkdir_screenshot

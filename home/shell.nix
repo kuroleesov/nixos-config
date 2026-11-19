@@ -36,6 +36,7 @@ in
 
     label_color=blue
     box=1
+    shading_mode=sextants
   '';
 
   home.sessionVariables = {
@@ -47,7 +48,7 @@ in
   # uv, claude и прочие пользовательские бинари
   home.sessionPath = [ "$HOME/.local/bin" ];
 
-  # Алиасы общие для zsh и bash
+  # Алиасы общие для fish и bash
   home.shellAliases = {
     # --- NixOS ---
     rebuild = "nh os switch"; # пересобрать и применить
@@ -59,10 +60,10 @@ in
     nconf = "cd ${flake} && $EDITOR .";
     ncode = "code ${flake}";
     ngens = "nixos-rebuild list-generations";
-    ndiff = "nvd diff $(ls -d1v /nix/var/nix/profiles/system-*-link | tail -2)"; # что поменялось в последнем rebuild
+    ndiff = "nvd diff $(command ls -d1v /nix/var/nix/profiles/system-*-link | tail -2)"; # что поменялось в последнем rebuild
     nfmt = "nix fmt ${flake}";
     nrepl = "nix repl --expr 'import <nixpkgs> {}'";
-    nsh = "nix-shell --run zsh -p"; # nsh htop cowsay — временное окружение
+    nsh = "nix-shell --run fish -p"; # nsh htop cowsay — временное окружение
     nr = "nix run nixpkgs#"; # nr hello — запустить без установки (без пробела!)
 
     # --- ls / cat / навигация ---
@@ -76,7 +77,6 @@ in
     ".." = "cd ..";
     "..." = "cd ../..";
     "...." = "cd ../../..";
-    "-" = "cd -";
 
     # --- безопаснее по умолчанию ---
     cp = "cp -iv";
@@ -124,54 +124,87 @@ in
     clients = "hyprctl clients";
   };
 
-  programs.zsh = {
+  programs.fish = {
     enable = true;
-    enableCompletion = true;
-    autosuggestion.enable = true;
-    syntaxHighlighting.enable = true;
-    history = {
-      size = 50000;
-      save = 50000;
-      ignoreDups = true;
-      ignoreSpace = true; # команда с пробелом в начале не попадёт в историю
-      share = true;
-    };
-    historySubstringSearch.enable = true; # стрелки вверх/вниз ищут по набранному
-    initContent = ''
-      setopt AUTO_CD            # `dir` вместо `cd dir`
-      setopt INTERACTIVE_COMMENTS
-      zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'   # автодополнение без учёта регистра
-      zstyle ':completion:*' menu select
 
-      bindkey '^[[1;5C' forward-word    # Ctrl+→
-      bindkey '^[[1;5D' backward-word   # Ctrl+←
+    # zsh из-за EDITOR=nvim работал в vi-режиме: Esc — командный режим
+    interactiveShellInit = ''
+      set -g fish_key_bindings fish_vi_key_bindings
+    '';
+
+    # alias не подходит: fish не принимает функцию с именем «-»
+    shellAbbrs."-" = "cd -";
+
+    functions = {
+      # Клавиши из zsh, которых нет в fish из коробки
+      fish_user_key_bindings = ''
+        for mode in default insert
+            # Ctrl+D: на пустой строке выход, иначе список вариантов
+            bind -M $mode ctrl-d 'if test -n "$(commandline)"; commandline -f complete; else; commandline -f exit; end'
+            bind -M $mode ctrl-g complete
+        end
+
+        bind -M insert ctrl-w backward-kill-word
+        bind -M insert alt-/ history-token-search-backward
+        bind -M insert alt-comma history-token-search-forward
+
+        bind -M default ctrl-p up-or-search
+        bind -M default ctrl-n down-or-search
+        bind -M default n up-or-search
+        bind -M default N down-or-search
+        bind -M default -- - up-or-search
+        bind -M default + down-or-search
+        bind -M default space forward-char
+        bind -M default = complete
+        bind -M default -m insert \? history-pager repaint-mode
+        bind -M default -m visual V beginning-of-line begin-selection end-of-line repaint-mode
+      '';
 
       # mkcd dir — создать папку и перейти в неё
-      mkcd() { mkdir -p "$1" && cd "$1"; }
+      mkcd = "mkdir -p $argv[1]; and cd $argv[1]";
 
       # extract file — распаковать любой архив
-      extract() {
-        case "$1" in
-          *.tar.bz2|*.tbz2) tar xjf "$1" ;;
-          *.tar.gz|*.tgz)   tar xzf "$1" ;;
-          *.tar.xz)         tar xJf "$1" ;;
-          *.tar.zst)        tar --zstd -xf "$1" ;;
-          *.tar)            tar xf "$1" ;;
-          *.bz2)            bunzip2 "$1" ;;
-          *.gz)             gunzip "$1" ;;
-          *.zip)            unzip "$1" ;;
-          *.rar)            unrar x "$1" ;;
-          *.7z)             7z x "$1" ;;
-          *) echo "extract: не знаю, как распаковать '$1'" ;;
-        esac
-      }
-
-      # please — повторить прошлую команду через sudo
-      please() { sudo $(fc -ln -1); }
+      extract = ''
+        switch "$argv[1]"
+            case '*.tar.bz2' '*.tbz2'
+                tar xjf $argv[1]
+            case '*.tar.gz' '*.tgz'
+                tar xzf $argv[1]
+            case '*.tar.xz'
+                tar xJf $argv[1]
+            case '*.tar.zst'
+                tar --zstd -xf $argv[1]
+            case '*.tar'
+                tar xf $argv[1]
+            case '*.bz2'
+                bunzip2 $argv[1]
+            case '*.gz'
+                gunzip $argv[1]
+            case '*.zip'
+                unzip $argv[1]
+            case '*.rar'
+                unrar x $argv[1]
+            case '*.7z'
+                7z x $argv[1]
+            case '*'
+                echo "extract: не знаю, как распаковать '$argv[1]'"
+        end
+      '';
 
       # cheat cmd — шпаргалка по команде
-      cheat() { curl -s "cheat.sh/$1"; }
-    '';
+      cheat = ''curl -s "cheat.sh/$argv[1]"'';
+
+      # vps — туннель к панели 3x-ui на NL VPS и открыть её в браузере (Ctrl+C закрывает)
+      vps = ''
+        set -l url http://localhost:24001/<panel-path>
+        echo "Панель открыта"
+        echo "панель: $url  (Ctrl+C — закрыть туннель)"
+        # браузер открываем, как только туннель начал отвечать
+        fish -c "for i in (seq 40); curl -s -o /dev/null $url; and exec xdg-open $url >/dev/null 2>&1; sleep 0.5; end" &
+        disown
+        ssh -N -o ExitOnForwardFailure=yes -L 24001:127.0.0.1:24001 root@<vps-ip>
+      '';
+    };
   };
 
   programs.bash = {
@@ -257,8 +290,8 @@ in
   programs.fzf = {
     enable = true;
     defaultCommand = "fd --type f --hidden --exclude .git";
-    fileWidgetCommand = "fd --type f --hidden --exclude .git";
-    changeDirWidgetCommand = "fd --type d --hidden --exclude .git";
+    fileWidget.command = "fd --type f --hidden --exclude .git";
+    changeDirWidget.command = "fd --type d --hidden --exclude .git";
   };
 
   programs.eza.enable = true;

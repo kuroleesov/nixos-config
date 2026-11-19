@@ -7,7 +7,6 @@
       name = "JetBrainsMono Nerd Font";
       size = 12;
     };
-    shellIntegration.enableZshIntegration = true;
 
     settings = {
       # --- окно ---

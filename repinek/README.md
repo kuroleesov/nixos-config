@@ -3,7 +3,7 @@
 Локальные правки:
 
 - nemo: убран `~/.hidden` (он скрывал бы ~/Pictures)
-- fish: не логин-шелл (остаётся zsh); алиасы указывают на `~/nixos-config#pc-1`
+- fish: алиасы указывают на `~/nixos-config#pc-1`; `grep` не подменён на rg (там другие `-r` и `-E`); `cat`, `ls`, `la`, `lt` не тащат цвета в пайпы, `cat` без пейджера
 - osu!lazer: путь через `config.home.homeDirectory`, локаль `ru`; beets: `~/Music`
 - librewolf: профиль `pc-1`, язык `ru,en-US`; zed: без wakatime, hyprland из `pkgs.unstable`
 - libreoffice, anki, touhou: пакеты из `pkgs.unstable`; шрифт google-sans убран

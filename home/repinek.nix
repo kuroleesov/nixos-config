@@ -4,7 +4,6 @@
 {
   imports = [
     inputs.osu-lazer.homeManagerModules.osu-lazer
-    "${inputs.home-manager-unstable}/modules/programs/noctalia"
 
     ../repinek/modules/cli/beets/user.nix
     ../repinek/modules/cli/fastfetch/user.nix
