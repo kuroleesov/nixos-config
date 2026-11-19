@@ -6,6 +6,11 @@
     # zsh из-за EDITOR=nvim работал в vi-режиме: Esc — командный режим
     interactiveShellInit = ''
       set -g fish_key_bindings fish_vi_key_bindings
+
+      # личное (серверы, адреса) — в ~/nixos-config/private/*.fish: папка в .gitignore и в репозиторий не попадает
+      for f in ~/nixos-config/private/*.fish
+          source $f
+      end
     '';
 
     # alias не подходит: fish не принимает функцию с именем «-»
@@ -72,17 +77,6 @@
 
       # cheat cmd — шпаргалка по команде
       cheat = ''curl -s "cheat.sh/$argv[1]"'';
-
-      # vps — туннель к панели 3x-ui на NL VPS и открыть её в браузере (Ctrl+C закрывает)
-      vps = ''
-        set -l url http://localhost:24001/<panel-path>
-        echo "Панель открыта"
-        echo "панель: $url  (Ctrl+C — закрыть туннель)"
-        # браузер открываем, как только туннель начал отвечать
-        fish -c "for i in (seq 40); curl -s -o /dev/null $url; and exec xdg-open $url >/dev/null 2>&1; sleep 0.5; end" &
-        disown
-        ssh -N -o ExitOnForwardFailure=yes -L 24001:127.0.0.1:24001 root@<vps-ip>
-      '';
     };
   };
 

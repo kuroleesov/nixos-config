@@ -1,3 +1,5 @@
 result
 result-*
 .claude/worktrees/
+# личные файлы (серверы, адреса): только на этом компьютере, см. README
+/private/
