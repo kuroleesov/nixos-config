@@ -24,7 +24,7 @@ hl.window_rule({
 hl.window_rule({ match = { class = "^(pavucontrol|org\\.pulseaudio\\.pavucontrol)$" }, float = true })
 hl.window_rule({ match = { class = "^(nm-connection-editor|blueman-manager)$" }, float = true })
 hl.window_rule({ match = { class = "^(xdg-desktop-portal.*)$" }, float = true })
-hl.window_rule({ match = { class = "^(firefox)$", title = "^(Picture-in-Picture)$" }, float = true, pin = true })
+hl.window_rule({ match = { class = "^(librewolf)$", title = "^(Picture-in-Picture|Картинка в картинке)$" }, float = true, pin = true })
 hl.window_rule({ match = { class = "^(thunar)$", title = "^(File Operation Progress)$" }, float = true })
 
 hl.window_rule({ match = { class = "^kitty$" }, float = true, size = { 1100, 650 } })

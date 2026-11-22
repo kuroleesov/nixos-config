@@ -1,4 +1,5 @@
 # Noctalia: запуск, звук, простой, геопозиция, блокировка, ночной свет, уведомления, OSD
+{ config, ... }:
 {
   imports = [
     ./bar.nix
@@ -49,14 +50,8 @@
         };
       };
 
-      location = {
-        auto_locate = false; # с VPN автоопределение места ненадёжно
-
-        # Для погоды и ночного света
-        address = "Moscow, Russia";
-        latitude = 55.7558;
-        longitude = 37.6173;
-      };
+      # Место для погоды и ночного света (address, latitude, longitude) — в private/noctalia.toml, см. ниже
+      location.auto_locate = false;
 
       lockscreen = {
         fingerprint = false;
@@ -76,6 +71,10 @@
       };
     };
   };
+
+  # Noctalia читает все *.toml в ~/.config/noctalia; личное — из private/ (папка в .gitignore), без файла ссылка просто пропускается
+  xdg.configFile."noctalia/private.toml".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-config/private/noctalia.toml";
 
   # Прячем .desktop Noctalia из лаунчеров
   xdg.dataFile."applications/dev.noctalia.Noctalia.desktop".text = ''

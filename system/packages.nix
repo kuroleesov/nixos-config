@@ -33,6 +33,8 @@
     libimobiledevice
 
     # приложения
+    codex
+    figma-linux
     mpv
     feishin
     cava

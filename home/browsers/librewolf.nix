@@ -41,6 +41,19 @@
       "ru"
     ];
 
+    # Хост Pywalfox встроен в Noctalia; `noctalia firefox-theme` пишет манифест только в ~/.mozilla и к старому пути в /nix/store
+    nativeMessagingHosts = [
+      (pkgs.writeTextDir "lib/mozilla/native-messaging-hosts/pywalfox.json" (
+        builtins.toJSON {
+          name = "pywalfox";
+          description = "Noctalia Firefox theme native messaging host";
+          path = "${pkgs.noctalia}/bin/.noctalia-wrapped";
+          type = "stdio";
+          allowed_extensions = [ "pywalfox@frewacom.org" ];
+        }
+      ))
+    ];
+
     profiles."pc-1" = {
       id = 0;
       name = "pc-1";

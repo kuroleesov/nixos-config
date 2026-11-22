@@ -5,7 +5,7 @@
 
     # Home Manager переопределяет эти настройки для пользователей, но для root они остаются
     shellAliases = {
-      "ls" = "ls -la";
+      "ls" = "la";
     };
 
     interactiveShellInit = ''

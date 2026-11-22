@@ -21,8 +21,7 @@ hl.bind(main_mod .. " + J", hl.dsp.layout("togglesplit"))
 -- Выход из Hyprland: Super + Shift + E (без подтверждения, поэтому не одной клавишей)
 hl.bind(main_mod .. " + SHIFT + E", hl.dsp.exit())
 
--- Панели Noctalia: Super + R / Space / D / L / X / A / N / W / , / Tab, Super + Shift + V / P
-hl.bind(main_mod .. " + R", hl.dsp.exec_cmd("noctalia msg panel-toggle launcher"))
+-- Панели Noctalia: Super + Space / D / L / X / A / N / W / , / Tab, Super + Shift + V / P
 hl.bind(main_mod .. " + SPACE", hl.dsp.exec_cmd("noctalia msg panel-toggle launcher"))
 hl.bind(main_mod .. " + D", hl.dsp.exec_cmd("noctalia msg panel-toggle launcher"))
 hl.bind(main_mod .. " + L", hl.dsp.exec_cmd("noctalia msg session lock"))

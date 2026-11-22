@@ -27,6 +27,8 @@
           "https://gist.github.com".helper = helper;
         };
     };
+    # имя и почта для коммитов — в ~/nixos-config/private/gitconfig (папка в .gitignore); ~/.config/git/config только для чтения
+    includes = [ { path = "~/nixos-config/private/gitconfig"; } ];
   };
   programs.delta = {
     enable = true; # красивые git diff
