@@ -1,5 +1,6 @@
 # NixOS Configuration
->**Warning** These dotfiles were mostly vibecoded, so be careful.  
+>**Warning** These dotfiles were mostly vibecoded, so be careful.
+
 A personal NixOS setup built around **Hyprland**, **Noctalia**, and **Fish**.
 
 > This configuration is provided as-is. It was built primarily for personal use, so review the scripts and configuration before applying them to your system.
