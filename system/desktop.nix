@@ -1,5 +1,5 @@
 # Рабочий стол: Hyprland (UWSM), Plasma, раскладка, портали, Thunar, печать
-{ pkgs, ... }:
+{ pkgs, user, ... }:
 
 {
   # Hyprland через UWSM: правильно поднимает graphical-session.target,
@@ -29,6 +29,10 @@
   services.upower.enable = true;
   services.gnome.gnome-keyring.enable = true;
   security.polkit.enable = true;
+  # rebuild с новыми пакетами перезапускает polkit, а запущенный при входе hyprpolkitagent у нового polkitd
+  # не зарегистрирован → pkexec «no polkit agent». Перезапускаем агент следом; «+» — от root, «-» — при загрузке сессии ещё нет
+  systemd.services.polkit.serviceConfig.ExecStartPost =
+    "+-${pkgs.systemd}/bin/systemctl --user -M ${user}@ --no-block try-restart hyprpolkitagent.service";
 
   xdg.portal = {
     enable = true;

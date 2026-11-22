@@ -1,4 +1,4 @@
-# Сеть: NetworkManager, файрвол, avahi (UxPlay), Throne (VPN)
+# Сеть: NetworkManager, файрвол, avahi (UxPlay), Throne и keqdroid (VPN)
 { pkgs, ... }:
 
 {
@@ -39,4 +39,9 @@
     enable = true;
     tunMode.enable = true;
   };
+
+  environment.systemPackages = [ pkgs.keqdroid ];
+  # TUN в keqdroid: pkexec даёт root PATH=/usr/sbin:/usr/bin:/sbin:/bin:/root/bin, а вшитые в бинарник скрипты
+  # зовут mkdir, setpriv, systemd-run и т.д. по голым именам → без этой ссылки TUN падает (exit 127/5)
+  systemd.tmpfiles.rules = [ "L /root/bin - - - - /run/current-system/sw/bin" ];
 }
