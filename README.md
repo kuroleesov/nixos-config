@@ -1,237 +1,247 @@
-# nixos-config
+# NixOS Configuration
+>**Warning** These dotfiles were mostly vibecoded, so be careful.  
+A personal NixOS setup built around **Hyprland**, **Noctalia**, and **Fish**.
 
-Сразу говорю, навайбкожено шо пиздец, так что на свой страх и риск и вообще я ларпер
+> This configuration is provided as-is. It was built primarily for personal use, so review the scripts and configuration before applying them to your system.
 
-Готовая система на NixOS: оконный менеджер Hyprland, панель Noctalia, терминал с fish. Ставится на любой компьютер одной командой `./install.sh`: скрипт сам определяет видеокарту, тип загрузки и остальное железо.
+This guide explains how to deploy the configuration on an **existing NixOS installation**. It does not cover installing NixOS itself.
 
-Ниже — установка с нуля, по шагам. Если ты уже сидишь на NixOS, переходи сразу к [шагу 5](#5-поставь-этот-конфиг).
+## Requirements
 
-## Что понадобится
+- An existing, working NixOS installation.
+- An Intel or AMD 64-bit system. ARM and Apple Silicon are not supported by this configuration.
+- At least 8 GB of RAM.
+- At least 100 GB of available disk space is recommended. The full software set is fairly large and includes applications such as Steam and DaVinci Resolve.
+- A reliable internet connection. The initial build may download more than 10 GB of data.
+- Approximately one to two hours for the initial setup. Some packages may need to be built locally.
 
-- Обычный компьютер или ноутбук на Intel или AMD (64 бита). На Mac с процессором M1/M2/M3 и на ARM не заработает.
-- Флешка от 4 ГБ. Всё, что на ней есть, сотрётся.
-- Диск от 100 ГБ. Сама система занимает около 40 ГБ: в ней Steam, DaVinci Resolve и много чего ещё.
-- Интернет: скачается больше 10 ГБ.
-- От 8 ГБ оперативной памяти.
-- Час-два времени: часть программ собирается прямо на твоём компьютере.
+> **Important:** Applying this configuration changes system-level settings and installs or replaces packages. Back up important data and review the configuration before proceeding.
 
-> ⚠️ На шаге 4 весь диск компьютера будет стёрт. Сохрани нужные файлы заранее. Установка рядом с Windows здесь не описана.
+## Installation
 
-## Установка
+### 1. Open a terminal
 
-### 1. Скачай NixOS
+Log in to your existing NixOS installation and open a terminal.
 
-Зайди на https://nixos.org/download, найди раздел **NixOS: the Linux distribution** и скачай **Graphical ISO image** для **Intel/AMD (64-bit)**. Подойдёт любой вариант, GNOME или Plasma.
+### 2. Make Git available
 
-### 2. Запиши образ на флешку
-
-- **Windows:** программа [Rufus](https://rufus.ie). Выбери флешку, нажми «Выбрать» и укажи скачанный `.iso`, затем «Старт». Если Rufus спросит про режим записи, выбирай **DD**.
-- **Любая система:** программа [balenaEtcher](https://etcher.balena.io): Flash from file → флешка → Flash.
-
-### 3. Загрузись с флешки
-
-1. **Выключи Secure Boot**, иначе NixOS не загрузится. Включи компьютер и сразу жми `F2` или `Del`, откроется BIOS. Найди пункт **Secure Boot**, поставь **Disabled**, сохрани и выйди (обычно `F10`).
-2. Вставь флешку, перезагрузись и сразу жми клавишу меню загрузки: `F12`, `F11`, `F8` или `Esc`, зависит от производителя. Выбери флешку (часто она подписана как `UEFI: …`).
-3. В меню NixOS выбери первый пункт и подожди, пока загрузится рабочий стол.
-
-### 4. Установи NixOS
-
-Установщик откроется сам. Если нет, запусти значок **Install NixOS** на рабочем столе.
-
-- **Язык, часовой пояс, раскладка** — как тебе удобно.
-- **Пользователь:** придумай имя латиницей маленькими буквами, без пробелов, например `vasya`. Запомни его и пароль, они понадобятся дальше.
-- **Рабочий стол:** любой, например GNOME. Он нужен только на время установки: через него удобно копировать команды из браузера. Потом мой конфиг заменит его на Hyprland.
-- **Разметка диска:** «Стереть диск» и выбери диск компьютера. ⚠️ Всё на нём удалится. Отличай его по размеру: нужен большой внутренний диск (от 100 ГБ), а не флешка (4–64 ГБ). Если внутренних дисков несколько, выбери тот, где нет важных данных.
-- Нажми «Установить» и жди. В конце нажми «Перезагрузить» и вытащи флешку.
-
-### 5. Поставь этот конфиг
-
-1. Войди в систему под своим пользователем.
-2. Открой эту страницу в браузере (Firefox), чтобы копировать команды.
-3. Открой терминал: нажми клавишу `Win`, набери `Terminal` или `Консоль` и нажми `Enter`. Вставлять в терминал — `Ctrl+Shift+V`.
-4. Вводи команды по одной и после каждой жди, пока она закончит работу.
-
-Скачать git (временно, только для этой установки):
+Run:
 
 ```bash
 nix-shell -p git
 ```
 
-Когда строка начнётся с `[nix-shell:~]$`, скачай конфиг:
+Wait until the shell prompt changes to indicate that the temporary environment is active.
+
+### 3. Clone the repository
 
 ```bash
 git clone https://github.com/kuroleesov/nixos-config.git ~/nixos-config
 ```
 
-Если пишет `already exists`, конфиг уже скачан, просто иди дальше.
+If the directory already exists, the repository has likely been cloned before. You can continue to the next step.
 
-Перейди в папку с конфигом:
+### 4. Enter the repository directory
 
 ```bash
 cd ~/nixos-config
 ```
 
-Запусти установку:
+### 5. Run the installer
 
 ```bash
 ./install.sh
 ```
 
-Скрипт задаст несколько вопросов:
+The installer will ask for a few details:
 
-| Вопрос | Что ответить |
+| Prompt | What to enter |
 |---|---|
-| `Имя хоста [...]:` | придумай имя компьютера, например `vasya-pc`: только маленькие латинские буквы, цифры и дефис. В скобках подсказка из установщика, но с ней скрипт может не согласиться |
-| `Имя пользователя [vasya]:` | просто `Enter`: это тот, кого ты создал при установке |
-| `Создать hosts/… для пользователя …? [y/N]` | `y` и `Enter` |
-| `[sudo] password for vasya:` | твой пароль. Символы при вводе не видны, так и должно быть |
+| `Hostname [...]:` | Choose a hostname, for example `workstation`. Use lowercase Latin letters, numbers, and hyphens only. |
+| `Username [your-user]:` | Press `Enter` to use the current default, provided it matches your existing NixOS username. |
+| `Create hosts/... for user ...? [y/N]` | Enter `y` and press `Enter`. |
+| `[sudo] password for ...:` | Enter your user password. The terminal will not display characters while you type; this is expected. |
 
-Дальше будет долго: скачиваются и собираются программы. Не закрывай терминал и не выключай компьютер. После сборки скрипт может ещё раз спросить `[sudo] password` — введи тот же пароль. Когда появится `Готово: система … применена`, перезагрузись:
+The initial build can take a while because packages may need to be downloaded and compiled. Keep the terminal open and do not shut down the computer while the process is running.
+
+The installer may request your password again during the process. Enter the same password when prompted.
+
+When the installer reports that the system configuration has been applied successfully, reboot:
 
 ```bash
 reboot
 ```
 
-### 6. Первый вход
+## First login
 
-- **Экран входа:** введи пароль. По умолчанию запускается **Hyprland (UWSM)**. Если что-то не работает, перейди стрелкой `↑` на верхнюю строку с названием сеанса и стрелками `←` `→` выбери **Plasma**: это обычный рабочий стол на запасной случай.
-- **Super** ниже — это клавиша `Win`.
+- At the login screen, enter your password.
+- The default session is **Hyprland (UWSM)**.
+- If Hyprland does not start correctly, use the session selector to choose **Plasma** as a fallback desktop environment.
+- **Super** refers to the Windows key on most keyboards.
 
-| Клавиши | Что делают |
+### Keyboard shortcuts
+
+| Shortcut | Action |
 |---|---|
-| `Super + Enter` или `Super + Q` | терминал |
-| `Super + Space` (или `R`, `D`) | поиск и запуск программ |
-| `Super + B` | браузер |
-| `Super + E` | файлы |
-| `Super + C` | закрыть окно |
-| `Super + F` | окно на весь экран |
-| `Super + V` | сделать окно плавающим или вернуть обратно |
-| `Super + 1` … `Super + 0` | рабочие столы 1–10 |
-| `Super + Shift + цифра` | перенести окно на другой стол |
-| `Super + стрелки` | переключиться на соседнее окно |
-| `Super + Shift + стрелки` | передвинуть окно |
-| `Super + Ctrl + стрелки` | изменить размер окна |
-| `Super + A` | центр управления: звук, сеть, Bluetooth |
-| `Super + N` | уведомления |
-| `Super + W` | обои |
-| `Super + ,` | настройки панели |
-| `Super + L` | заблокировать экран |
-| `Super + X` | выключить, перезагрузить |
-| `Super + Shift + E` | выйти из сеанса (сразу, без вопроса) |
-| `Print` | скриншот области; `Ctrl + Print` — весь экран |
-| `Alt + Shift` | сменить раскладку (английская / русская) |
+| `Super + Enter` or `Super + Q` | Open the terminal |
+| `Super + Space` (or `R`, `D`) | Search for and launch applications |
+| `Super + B` | Open the browser |
+| `Super + E` | Open the file manager |
+| `Super + C` | Close the active window |
+| `Super + F` | Toggle fullscreen |
+| `Super + V` | Toggle floating mode for the active window |
+| `Super + 1` … `Super + 0` | Switch to workspaces 1–10 |
+| `Super + Shift + number` | Move the active window to another workspace |
+| `Super + arrow keys` | Focus an adjacent window |
+| `Super + Shift + arrow keys` | Move the active window |
+| `Super + Ctrl + arrow keys` | Resize the active window |
+| `Super + A` | Open the control center (audio, network, Bluetooth) |
+| `Super + N` | Open notifications |
+| `Super + W` | Open wallpaper controls |
+| `Super + ,` | Open panel settings |
+| `Super + L` | Lock the screen |
+| `Super + X` | Open power options |
+| `Super + Shift + E` | Exit the current session immediately |
+| `Print` | Capture a selected screen area; `Ctrl + Print` captures the full screen |
+| `Alt + Shift` | Switch keyboard layout (English / Russian) |
 
-## Что поменять под себя
+## Personalizing the configuration
 
-Конфиг настроен под меня, кое-что стоит поправить. Открыть папку в VS Code: `ncode`.
+The configuration contains some personal defaults. You may want to adjust them after installation.
 
-- **Часовой пояс и язык:** `system/locale.nix`. Сейчас Москва, интерфейс на английском, даты и числа в русском формате.
-- **Город для погоды и ночного режима:** `home/desktop/noctalia/default.nix`, блок `location`.
-- **Программы:** `system/packages.nix`. Ненужное (Discord, Spotify, DaVinci Resolve и т. д.) просто удали строкой.
-- **Программы с настройками:** `home/apps.nix`, `home/media.nix`, `home/games.nix` (osu!, Steam Guard), `home/editors.nix` (Zed).
-- **Хоткеи:** `home/desktop/hypr/config/keybinds.lua`. Применяются сразу командой `hr`, пересобирать систему не нужно.
+Open the repository in VS Code with:
 
-После правок примени их командой `rebuild`.
+```bash
+ncode
+```
 
-## Команды на каждый день
+Common settings:
 
-| Команда | Что делает |
+- **Timezone and locale:** `system/locale.nix`. The current defaults use Moscow time, an English interface, and Russian date and number formats.
+- **Location for weather and night-light features:** `home/desktop/noctalia/default.nix`, in the `location` section.
+- **System packages:** `system/packages.nix`. Remove entries for applications you do not need, such as Discord, Spotify, or DaVinci Resolve.
+- **Application-specific configuration:** `home/apps.nix`, `home/media.nix`, `home/games.nix` (including osu! and Steam Guard), and `home/editors.nix` (Zed).
+- **Hyprland keybindings:** `home/desktop/hypr/config/keybinds.lua`. Changes can be applied immediately with `hr`; a full system rebuild is not required.
+
+After editing Nix configuration files, apply the changes with:
+
+```bash
+rebuild
+```
+
+## Useful commands
+
+| Command | Description |
 |---|---|
-| `rebuild` | применить изменения в конфиге |
-| `upd` | обновить все программы и применить |
-| `rbt` | попробовать изменения до перезагрузки, не трогая меню загрузки |
-| `ndiff` | что поменялось после последнего `rebuild` |
-| `nclean` | удалить старые версии системы и освободить место |
-| `ncode` | открыть конфиг в VS Code |
+| `rebuild` | Apply the current configuration |
+| `upd` | Update all inputs and apply the updated configuration |
+| `rbt` | Test configuration changes before rebooting, without modifying the boot menu |
+| `ndiff` | Show changes since the previous `rebuild` |
+| `nclean` | Remove old system generations and free disk space |
+| `ncode` | Open the configuration in VS Code |
 
-**Откат:** если после `rebuild` или `upd` что-то сломалось, перезагрузись. Сразу после включения на несколько секунд появится меню загрузки: нажми любую стрелку, чтобы остановить отсчёт, выбери стрелками предыдущий пункт NixOS и нажми `Enter`. Это прошлая рабочая версия системы.
+### Rolling back a change
 
-## Если что-то пошло не так
+If the system stops working after running `rebuild` or `upd`, reboot the computer.
 
-- **`Ошибка: скрипт работает только на NixOS`** — ты запускаешь не в NixOS. Сначала шаги 1–4.
-- **`Ошибка: запусти без sudo`** — набери просто `./install.sh`, без `sudo` впереди. Пароль скрипт спросит сам.
-- **`nix-shell: command not found` или `git: command not found`** — ты не в NixOS или пропустил команду `nix-shell -p git`.
-- **Установка оборвалась** (ошибка сборки, пропал интернет): открой терминал и запусти заново, скрипт продолжит:
+When the boot menu appears, press an arrow key to stop the countdown. Select the previous NixOS generation using the arrow keys and press `Enter`. This starts the previously working system generation.
+
+## Troubleshooting
+
+- **`Error: this script only works on NixOS`** — Run the installer from an existing NixOS installation.
+- **`Error: run without sudo`** — Start the script as your regular user with `./install.sh`. Do not prefix the command with `sudo`; the script will request elevated permissions when needed.
+- **`nix-shell: command not found` or `git: command not found`** — Make sure you are running NixOS and have started the temporary Git environment with `nix-shell -p git`.
+- **The installation was interrupted** (for example, because of a build error or lost internet connection) — Open a terminal and run the installer again. It is designed to resume the setup:
   ```bash
   cd ~/nixos-config
   ./install.sh
   ```
-- **`Ошибка: некорректное имя хоста`** — в имени есть большие буквы, пробелы или `_`. Запусти скрипт ещё раз и введи имя вроде `vasya-pc`.
-- **После перезагрузки чёрный экран** (бывает с видеокартами NVIDIA): перезагрузись и в меню загрузки выбери предыдущий пункт (см. «Откат» выше), либо на экране входа выбери **Plasma**.
-- **Очень старая видеокарта NVIDIA** (GTX 600/700 и старше): ей нужен драйвер `legacy_470`, сам скрипт его не ставит. В `hosts/<имя>/default.nix` замени `legacy_580` на `legacy_470` и выполни `rebuild`.
-- **Ставишь в виртуальную машину:** Hyprland нужно 3D-ускорение, включи его в настройках VM. Если не помогает, выбирай **Plasma**.
+- **`Error: invalid hostname`** — Hostnames must not contain uppercase letters, spaces, or underscores. Use a name such as `workstation` or `my-pc`.
+- **A black screen appears after reboot** — This can happen with some NVIDIA configurations. Reboot and select the previous NixOS generation from the boot menu, or choose **Plasma** at the login screen.
+- **An older NVIDIA GPU is not working** (GTX 600/700 series and older) — These GPUs require the `legacy_470` driver. The installer does not select it automatically. In `hosts/<hostname>/default.nix`, replace `legacy_580` with `legacy_470`, then run `rebuild`.
+- **Running inside a virtual machine** — Hyprland requires 3D acceleration. Enable it in your VM settings. If it still does not work, use **Plasma**.
 
-## Для опытных
+## For advanced users
 
-### Установка с live-образа без графического установщика
+### What `install.sh` does
 
-Загрузись с флешки, разметь диск и смонтируй его в `/mnt` (корень, плюс `/mnt/boot` для UEFI), затем:
+The installer detects the system hardware and creates a host configuration under `hosts/<hostname>/`.
+
+- **GPU detection:** Selects the NVIDIA, AMD, or Intel configuration from `system/hardware/<nvidia|amd|intel>.nix`. For NVIDIA GPUs older than Turing (before RTX 20xx / GTX 16xx), it disables open kernel modules and selects the `legacy_580` driver. Kepler-generation GPUs and older require `legacy_470`, which must be configured manually. On laptops with both NVIDIA and integrated graphics, it configures PRIME offload (`nvidia-offload <program>`). On desktops, it configures the discrete GPU.
+- **Bootloader detection:** Uses systemd-boot on UEFI systems and GRUB on legacy BIOS systems, targeting the physical disk containing the root filesystem (including LUKS/LVM/btrfs setups).
+- **Bluetooth:** Enables Bluetooth support when compatible hardware is detected.
+- **Virtualization:** Detects QEMU/KVM, VirtualBox, and VMware, then enables the corresponding guest drivers.
+- **Hardware configuration:** Generates `hardware-configuration.nix` using `nixos-generate-config`. It determines `system.stateVersion` from the existing `/etc/nixos/configuration.nix` when possible, otherwise using the current version.
+
+After generating the host configuration, the installer applies the configuration, copies the repository to `/home/<user>/nixos-config`, and sets the user's password if one is not already configured.
+
+If `hosts/<hostname>/` already exists, the installer preserves its `default.nix` and `meta.nix` files and applies the existing host configuration. It regenerates `hardware-configuration.nix` only when using `--root`.
+
+### Installer options
+
+| Option | Description |
+|---|---|
+| `--host <name>` | Set the hostname without an interactive prompt |
+| `--user <name>` | Set the username without an interactive prompt |
+| `--root /mnt` | Target an already-mounted system root |
+| `--dry-run` | Show the files and changes that would be generated without applying them |
+| `--no-apply` | Generate configuration files without applying the configuration |
+| `--yes` | Skip interactive confirmation prompts |
+
+The installer can be tested against simulated hardware with:
 
 ```bash
-nix-shell -p git
-git clone https://github.com/kuroleesov/nixos-config.git
-cd nixos-config
-./install.sh --root /mnt
+scripts/test-install.sh
 ```
 
-Скрипт поставит систему через `nixos-install`, скопирует репозиторий в `/mnt/home/<пользователь>/nixos-config` и спросит пароль пользователя.
+### Repository structure
 
-### Что делает install.sh
+```text
+nixos-config/
+├── flake.nix                     # Flake inputs and host builds
+├── hosts/                        # Per-machine configuration
+│   └── <hostname>/
+│       ├── default.nix           # Host-specific system configuration
+│       ├── meta.nix              # Host metadata, including username
+│       └── hardware-configuration.nix
+├── system/                       # System-wide NixOS configuration
+│   ├── hardware/                 # GPU drivers and hardware modules
+│   ├── nix.nix                   # Nix settings, overlays, nh, nix-ld
+│   ├── boot.nix                  # Kernel, bootloader settings, ly
+│   ├── desktop.nix               # Hyprland, Plasma fallback, portals, etc.
+│   ├── fonts.nix                 # System fonts
+│   ├── audio.nix                 # PipeWire
+│   ├── network.nix               # Networking, firewall, Avahi/UxPlay, Throne
+│   ├── games.nix                 # Steam and GameMode
+│   ├── apps.nix                  # Firefox, Claude Desktop, Flatpak, etc.
+│   ├── packages.nix              # System package list
+│   ├── locale.nix                # Locale and timezone
+│   ├── users.nix                 # User accounts
+│   └── shell.nix                 # System-level Fish configuration
+├── home/                         # Home Manager configuration
+│   ├── shell/                    # Fish, aliases, Starship, Git, CLI tools
+│   ├── desktop/
+│   │   ├── hypr/                 # Hyprland configuration (Lua)
+│   │   └── noctalia/             # Noctalia configuration
+│   ├── browsers/                 # LibreWolf and Chromium
+│   ├── terminals.nix             # Kitty and Alacritty
+│   ├── editors.nix               # Zed
+│   ├── apps.nix                  # Desktop applications
+│   ├── media.nix                 # Media applications
+│   ├── games.nix                 # Games and related configuration
+│   └── cli.nix                   # Command-line applications
+├── pkgs/                         # Custom packages
+│   └── il2cpp-inspector-redux/
+├── assets/                       # Wallpapers and ly animations
+├── scripts/
+│   ├── update.sh                 # Update inputs, check, and rebuild
+│   └── test-install.sh           # Test installer against simulated hardware
+└── private/                      # Local, untracked personal settings
+```
 
-Смотрит, что за компьютер, и создаёт под него `hosts/<имя>/`:
+### Configuration notes
 
-- **Видеокарта.** NVIDIA, AMD или Intel → `system/hardware/<nvidia|amd|intel>.nix`. Для NVIDIA старше Turing (до RTX 20xx / GTX 16xx) выключает открытые модули и ставит драйвер `legacy_580` (Kepler и старше нужен `legacy_470`, его вписывают вручную). Ноутбук с NVIDIA и встроенной видеокартой → PRIME offload (`nvidia-offload <программа>`). На ПК подключает только дискретную видеокарту.
-- **Загрузчик.** UEFI → systemd-boot, BIOS → GRUB на физический диск с корнем (в том числе через LUKS/LVM/btrfs).
-- **Bluetooth.** Включает, если он есть.
-- **Виртуальная машина** (QEMU/KVM, VirtualBox, VMware) → гостевые драйверы.
-- **`hardware-configuration.nix`** из `nixos-generate-config`, а `system.stateVersion` — версия первой установки (из старого `/etc/nixos/configuration.nix`, иначе текущая).
-
-Потом применяет конфиг, кладёт репозиторий в `/home/<пользователь>/nixos-config` и задаёт пароль, если его нет. При установке с live-образа пароль спрашивает всегда.
-
-Если `hosts/<имя>/` уже есть, скрипт не трогает его `default.nix` и `meta.nix` и только применяет. С `--root` (новые диски) пересоздаёт в нём `hardware-configuration.nix`.
-
-Флаги:
-
-- `--host <имя>`, `--user <имя>` — задать имена без вопросов;
-- `--root /mnt` — ставить в смонтированную систему с live-образа;
-- `--dry-run` — только показать, что будет создано;
-- `--no-apply` — создать файлы, но не применять;
-- `--yes` — без вопросов.
-
-Проверка скрипта на фейковом железе: `scripts/test-install.sh`.
-
-### Где что лежит
-
-| Путь | Что там |
-|---|---|
-| `flake.nix` | входы (nixpkgs, home-manager, …) и сборка всех хостов из `hosts/` |
-| `hosts/<имя>/` | конкретный компьютер: загрузчик, железо, `meta.nix` с именем пользователя |
-| `system/` | NixOS для всех компьютеров (от root) |
-| `system/nix.nix` | настройки nix, оверлеи, nh, nix-ld |
-| `system/boot.nix` | ядро, bootvine, экран входа ly |
-| `system/desktop.nix` | Hyprland, Plasma про запас, порталы, Thunar, печать |
-| `system/fonts.nix` | шрифты |
-| `system/audio.nix` | PipeWire |
-| `system/network.nix` | сеть, файрвол, avahi/UxPlay, Throne |
-| `system/games.nix` | Steam, GameMode |
-| `system/apps.nix` | Firefox, Claude Desktop, Flatpak, VirtualBox, LocalSend |
-| `system/packages.nix` | системные пакеты списком |
-| `system/locale.nix`, `users.nix`, `shell.nix` | время и язык; пользователь; fish на уровне системы |
-| `system/hardware/` | драйверы видеокарт, подключаются из `hosts/<имя>/` |
-| `home/` | Home Manager: всё в домашней папке |
-| `home/shell/` | fish, алиасы (`aliases.nix`), starship, git, CLI-утилиты |
-| `home/desktop/` | Hyprland (`hypr/*.lua`), Noctalia (`noctalia/`), тема GTK/Qt/курсор, Nemo |
-| `home/terminals.nix` | kitty и alacritty |
-| `home/editors.nix` | Zed |
-| `home/browsers/` | LibreWolf, Chromium |
-| `home/apps.nix`, `media.nix`, `games.nix`, `cli.nix` | программы по темам |
-| `pkgs/` | свои пакеты (il2cpp-inspector-redux) |
-| `assets/` | обои и анимация ly |
-| `scripts/update.sh` | обновить входы, проверить и пересобрать |
-
-### Как устроено
-
-- **Добавить программу.** Без настроек — строкой в `system/packages.nix` (для всех пользователей) или в `home.packages` подходящего файла в `home/`. С настройками — блок `programs.<имя>` в файле по теме.
-- **Hyprland.** Файлы `home/desktop/hypr/` подключены симлинками, правки применяются сразу через `hr` (`hyprctl reload`), без пересборки.
-- **Личное** (серверы, адреса, свои функции, имя и почта для git, город) — в папке `private/`: файлы `*.fish` fish подхватывает при запуске, `gitconfig` подключает git, `noctalia.toml` (место для погоды и ночного света) — Noctalia. Папка в `.gitignore` и в репозиторий не попадает. На новый компьютер её переносят вручную.
-- **Открыть конфиг:** `nconf` (nvim), `ncode` (VS Code), `hconf` (hyprland.lua), `dt` (перейти в папку).
+- **Adding an application:** Add a package to `system/packages.nix` for a system-wide installation, or to the appropriate `home.packages` list in `home/` for a user-level installation. For applications with NixOS or Home Manager options, configure the relevant `programs.<name>` block in the appropriate module.
+- **Hyprland:** Files in `home/desktop/hypr/` are linked into the active configuration. Most changes can be applied immediately with `hr` (`hyprctl reload`) without rebuilding the system.
+- **Personal settings:** Machine-specific details such as server addresses, personal functions, Git identity, and location belong in `private/`. Fish loads `*.fish` files at startup, Git uses `gitconfig`, and Noctalia reads `noctalia.toml` for location-related settings such as weather and night light. This directory is listed in `.gitignore` and is not committed to the repository. Copy it manually when setting up another machine.
+- **Opening configuration files:** Use `nconf` for Neovim, `ncode` for VS Code, `hconf` for the Hyprland Lua configuration, or `dt` to change to the repository directory.
