@@ -8,7 +8,7 @@
 
       screen_time_enabled = true;
       settings_show_advanced = true;
-      app_icon_colorize = true;
+      colorize_icons = true;
       external_ip_enabled = true; # внешний IP во вкладке сети центра управления
       time_format = "{:%H:%M:%S}";
 
