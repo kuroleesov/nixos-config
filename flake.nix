@@ -27,6 +27,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # ветку nix их CI обновляет на каждый релиз (версия и хеш из подписанного SHA256SUMS); новая версия приходит с `upd`
+    keqdroid = {
+      url = "github:Lemonochka/keqdroid/nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     osu-lazer = {
       url = "github:repinek/osu-lazer-flake";
       inputs.nixpkgs.follows = "nixpkgs-unstable";

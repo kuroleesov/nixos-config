@@ -43,7 +43,6 @@
       # Noctalia v5: в 26.05 старая 5.0, конфиг рассчитан на версию из unstable
       inherit (final.unstable) noctalia;
       il2cpp-inspector-redux = final.callPackage ../pkgs/il2cpp-inspector-redux { };
-      keqdroid = final.callPackage ../pkgs/keqdroid { };
     })
   ];
 

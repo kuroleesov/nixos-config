@@ -63,6 +63,27 @@
         "type": "github"
       }
     },
+    "keqdroid": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1795452473,
+        "narHash": "sha256-+dkmA2eGitfck7NXxkm8n6QL1+tTKrt7ifDwfdC2EBI=",
+        "owner": "Lemonochka",
+        "repo": "keqdroid",
+        "rev": "e65096ab5d531c298494e55c06a6459b689ff774",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Lemonochka",
+        "ref": "nix",
+        "repo": "keqdroid",
+        "type": "github"
+      }
+    },
     "nix-index-database": {
       "inputs": {
         "nixpkgs": [
@@ -124,6 +145,7 @@
         "claude-desktop": "claude-desktop",
         "firefox-addons": "firefox-addons",
         "home-manager": "home-manager",
+        "keqdroid": "keqdroid",
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": [
