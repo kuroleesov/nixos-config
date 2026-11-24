@@ -25,6 +25,7 @@
     psmisc # killall, pstree, fuser
     file # тип файла
     btop # монитор ресурсов
+    openssh
 
     # сеть
     nmap

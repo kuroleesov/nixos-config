@@ -35,6 +35,12 @@
   systemd.services.avahi-daemon.serviceConfig.ExecStartPre =
     "+${pkgs.coreutils}/bin/rm -f /run/avahi-daemon/pid";
 
+  # SSH-сервер; порт 22 открывается в файрволе сам (openFirewall по умолчанию)
+  services.openssh = {
+    enable = true;
+    settings.PermitRootLogin = "no";
+  };
+
   programs.throne = {
     enable = true;
     tunMode.enable = true;
