@@ -33,7 +33,7 @@
     libimobiledevice
 
     # приложения
-    codex
+    chatgpt
     figma-linux
     mpv
     feishin
