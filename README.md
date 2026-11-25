@@ -161,6 +161,8 @@ When the boot menu appears, press an arrow key to stop the countdown. Select the
 - **A black screen appears after reboot** — This can happen with some NVIDIA configurations. Reboot and select the previous NixOS generation from the boot menu, or choose **Plasma** at the login screen.
 - **An older NVIDIA GPU is not working** (GTX 600/700 series and older) — These GPUs require the `legacy_470` driver. The installer does not select it automatically. In `hosts/<hostname>/default.nix`, replace `legacy_580` with `legacy_470`, then run `rebuild`.
 - **Running inside a virtual machine** — Hyprland requires 3D acceleration. Enable it in your VM settings. If it still does not work, use **Plasma**.
+- **A downloaded program fails with `error while loading shared libraries: libXXX.so`** — Find the package with `nix-locate libXXX.so`, add it to `programs.nix-ld.libraries` in `system/compat.nix`, run `rebuild`, and log in again.
+- **Adding an AppImage to the app menu** — Right-click the file in Nemo and choose **Добавить в меню приложений**. The image stays where it is; to launch it from a terminal, use `appimage-run <file>`.
 
 ## For advanced users
 
@@ -207,9 +209,10 @@ nixos-config/
 │       └── hardware-configuration.nix
 ├── system/                       # System-wide NixOS configuration
 │   ├── hardware/                 # GPU drivers and hardware modules
-│   ├── nix.nix                   # Nix settings, overlays, nh, nix-ld
+│   ├── nix.nix                   # Nix settings, overlays, nh
+│   ├── compat.nix                # nix-ld, AppImage, /usr/share/* for non-Nix software
 │   ├── boot.nix                  # Kernel, bootloader settings, ly
-│   ├── desktop.nix               # Hyprland, Plasma fallback, portals, etc.
+│   ├── desktop.nix               # Hyprland, Plasma fallback, portals, GStreamer
 │   ├── fonts.nix                 # System fonts
 │   ├── audio.nix                 # PipeWire
 │   ├── network.nix               # Networking, firewall, Avahi/UxPlay, Throne
@@ -223,7 +226,9 @@ nixos-config/
 │   ├── shell/                    # Fish, aliases, Starship, Git, CLI tools
 │   ├── desktop/
 │   │   ├── hypr/                 # Hyprland configuration (Lua)
-│   │   └── noctalia/             # Noctalia configuration
+│   │   ├── noctalia/             # Noctalia configuration
+│   │   ├── nemo-appimage.nix     # Nemo context menu for AppImages
+│   │   └── theme.nix             # GTK/Qt, cursor, global Flatpak overrides
 │   ├── browsers/                 # LibreWolf and Chromium
 │   ├── terminals.nix             # Kitty and Alacritty
 │   ├── editors.nix               # Zed
