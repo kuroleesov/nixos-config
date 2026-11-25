@@ -54,44 +54,40 @@ hl.config({
     },
 })
 
-hl.curve("easeOutQuint", {
-    type = "bezier",
-    points = { { 0.23, 1 }, { 0.32, 1 } },
-})
-hl.curve("easeInOutCubic", {
-    type = "bezier",
-    points = { { 0.65, 0.05 }, { 0.36, 1 } },
-})
-hl.curve("linear", {
-    type = "bezier",
-    points = { { 0, 0 }, { 1, 1 } },
-})
-hl.curve("almostLinear", {
-    type = "bezier",
-    points = { { 0.5, 0.5 }, { 0.75, 1 } },
-})
-hl.curve("quick", {
-    type = "bezier",
-    points = { { 0.15, 0 }, { 0.1, 1 } },
-})
+-- Анимации Material 3 Expressive (из github.com/deadinside28/nixos-config).
+-- Пружины пересчитаны из токенов Android: c = 2·ζ·√k при массе 1;
+-- у пружин speed не используется, длительность берётся из физики.
+
+-- «Пространственные» пружины: движение и масштаб
+hl.curve("m3DefaultSpatial", { type = "spring", mass = 1, stiffness = 380, dampening = 31.19 }) -- ζ 0.8
+hl.curve("m3SlowSpatial", { type = "spring", mass = 1, stiffness = 200, dampening = 22.63 }) -- ζ 0.8, полноэкранное
+-- ζ 1.0: окно доходит до места без перелёта и дрожи текста в конце
+hl.curve("m3DefaultSpatialCalm", { type = "spring", mass = 1, stiffness = 380, dampening = 38.99 })
+-- «Эффектные» пружины: прозрачность и цвет, без отскока
+hl.curve("m3DefaultEffects", { type = "spring", mass = 1, stiffness = 1600, dampening = 80 })
+hl.curve("m3FastEffects", { type = "spring", mass = 1, stiffness = 3800, dampening = 123.29 })
+-- уход с экрана — ускоряющаяся кривая, появление — быстрый старт и мягкое торможение
+hl.curve("m3EmphasizedAccel", { type = "bezier", points = { { 0.3, 0 }, { 0.8, 0.15 } } })
+hl.curve("m3EmphasizedDecel", { type = "bezier", points = { { 0.05, 0.7 }, { 0.1, 1 } } })
+hl.curve("m3Standard", { type = "bezier", points = { { 0.2, 0 }, { 0, 1 } } })
 
 local animations = {
-    { leaf = "global",        enabled = true, speed = 10,   bezier = "default" },
-    { leaf = "border",        enabled = true, speed = 5.39, bezier = "easeOutQuint" },
-    { leaf = "windows",       enabled = true, speed = 4.79, bezier = "easeOutQuint" },
-    { leaf = "windowsIn",     enabled = true, speed = 4.1,  bezier = "easeOutQuint", style = "popin 87%" },
-    { leaf = "windowsOut",    enabled = true, speed = 1.49, bezier = "linear",       style = "popin 87%" },
-    { leaf = "fadeIn",        enabled = true, speed = 1.73, bezier = "almostLinear" },
-    { leaf = "fadeOut",       enabled = true, speed = 1.46, bezier = "almostLinear" },
-    { leaf = "fade",          enabled = true, speed = 3.03, bezier = "quick" },
-    { leaf = "layers",        enabled = true, speed = 3.81, bezier = "easeOutQuint" },
-    { leaf = "layersIn",      enabled = true, speed = 4,    bezier = "easeOutQuint", style = "fade" },
-    { leaf = "layersOut",     enabled = true, speed = 1.5,  bezier = "linear",       style = "fade" },
-    { leaf = "fadeLayersIn",  enabled = true, speed = 1.79, bezier = "almostLinear" },
-    { leaf = "fadeLayersOut", enabled = true, speed = 1.39, bezier = "almostLinear" },
-    { leaf = "workspaces",    enabled = true, speed = 3,    bezier = "quick",        style = "fade" },
-    { leaf = "workspacesIn",  enabled = true, speed = 3,    bezier = "quick",        style = "fade" },
-    { leaf = "workspacesOut", enabled = true, speed = 3,    bezier = "quick",        style = "fade" },
+    { leaf = "global", enabled = true, speed = 3, bezier = "m3Standard" },
+    { leaf = "windowsIn", enabled = true, speed = 4, bezier = "m3EmphasizedDecel", style = "popin 85%" },
+    { leaf = "windowsOut", enabled = true, speed = 2, bezier = "m3EmphasizedAccel", style = "popin 85%" },
+    { leaf = "windowsMove", enabled = true, speed = 3, spring = "m3DefaultSpatialCalm" },
+    { leaf = "fadeIn", enabled = true, speed = 2, spring = "m3DefaultEffects" },
+    { leaf = "fadeOut", enabled = true, speed = 1.5, bezier = "m3EmphasizedAccel" },
+    { leaf = "fadeSwitch", enabled = true, speed = 2, spring = "m3DefaultEffects" },
+    { leaf = "fadeDim", enabled = true, speed = 2, spring = "m3DefaultEffects" },
+    { leaf = "border", enabled = true, speed = 2, spring = "m3FastEffects" },
+    -- воркспейсы: M3 «shared axis» по вертикали
+    { leaf = "workspaces", enabled = true, speed = 4, spring = "m3SlowSpatial", style = "slidefadevert 15%" },
+    { leaf = "specialWorkspace", enabled = true, speed = 4, spring = "m3SlowSpatial", style = "slidefadevert 20%" },
+    { leaf = "zoomFactor", enabled = true, speed = 3, spring = "m3DefaultSpatial" },
+    { leaf = "layers", enabled = true, speed = 2, spring = "m3DefaultEffects" },
+    { leaf = "layersIn", enabled = true, speed = 2, spring = "m3DefaultEffects", style = "fade" },
+    { leaf = "layersOut", enabled = true, speed = 1.5, bezier = "m3EmphasizedAccel", style = "fade" },
 }
 
 for _, animation in ipairs(animations) do

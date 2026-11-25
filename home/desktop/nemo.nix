@@ -3,11 +3,16 @@
 
 {
   home.packages = with pkgs; [
-    nemo-with-extensions
-    nemo-fileroller # интеграция с File Roller
+    # стандартные расширения Mint (nemo-python, nemo-fileroller, эмблемы, цвет папок)
+    # + предпросмотр по пробелу и пункты меню для AppImage
+    (nemo-with-extensions.override {
+      extensions = [
+        nemo-preview
+        (import ./nemo-appimage.nix { inherit pkgs; })
+      ];
+    })
     file-roller # архиватор
     ffmpegthumbnailer # миниатюры видео
-    nemo-preview # предпросмотр файлов по пробелу
   ];
 
   dconf.settings = {

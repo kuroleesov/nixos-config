@@ -10,6 +10,14 @@
   xdg.configFile."hypr/config".source =
     config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-config/home/desktop/hypr/config";
 
+  # Галка «Разрешить токен восстановления» в выборе экрана включена по умолчанию:
+  # OBS, Discord и т.п. не спрашивают экран заново при каждом подключении
+  xdg.configFile."hypr/xdph.conf".text = ''
+    screencopy {
+        allow_token_by_default = true
+    }
+  '';
+
   # Для сессии «Hyprland» без UWSM: этот таргет поднимает graphical-session.target,
   # от которого стартует Noctalia (hyprland.lua запускает таргет при старте).
   # Под «Hyprland (UWSM)» это делает сам UWSM, таргет не используется.

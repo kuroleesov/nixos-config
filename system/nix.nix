@@ -82,7 +82,4 @@
       extraArgs = "--keep-since 14d --keep 5";
     };
   };
-
-  # Запуск обычных Linux-бинарников, скачанных не через Nix
-  programs.nix-ld.enable = true;
 }

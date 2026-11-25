@@ -20,6 +20,13 @@
     python3Packages.pip
     unstable.claude-code
     ffmpeg
+    # кодеки GStreamer (путь задан в system/desktop.nix)
+    gst_all_1.gstreamer
+    gst_all_1.gst-plugins-base
+    gst_all_1.gst-plugins-good
+    gst_all_1.gst-plugins-bad
+    gst_all_1.gst-plugins-ugly
+    gst_all_1.gst-libav
     rsync
     lsof # открытые файлы
     psmisc # killall, pstree, fuser

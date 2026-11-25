@@ -77,4 +77,20 @@
     size = 20;
     hyprcursor.enable = true;
   };
+
+  # Общие настройки всех Flatpak: песочница не видит хост, поэтому темы, иконки, настройки GTK/Qt (их красит
+  # Noctalia), fontconfig и курсор пробрасываются руками. Qt — только через портал: иначе GTK-диалог
+  # нарисуется внутри песочницы и будет видеть только её файлы
+  xdg.dataFile."flatpak/overrides/global".text = ''
+    [Context]
+    filesystems=/run/current-system/sw/share/themes:ro;/run/current-system/sw/share/icons:ro;/run/current-system/sw/share/X11/fonts:ro;/nix/store:ro;~/.icons:ro;~/.themes:ro;xdg-config/gtk-3.0:ro;xdg-config/gtk-4.0:ro;xdg-config/fontconfig:ro;xdg-config/qt5ct:ro;xdg-config/qt6ct:ro;xdg-data/icons:ro;xdg-data/themes:ro;xdg-desktop;xdg-documents;xdg-download;xdg-music;xdg-pictures;xdg-videos;~/Games;~/nixos-config
+
+    [Environment]
+    GTK_USE_PORTAL=1
+    QT_QPA_PLATFORM=wayland;xcb
+    QT_QPA_PLATFORMTHEME=xdgdesktopportal
+    ELECTRON_OZONE_PLATFORM_HINT=auto
+    XCURSOR_THEME=${config.home.pointerCursor.name}
+    XCURSOR_SIZE=${toString config.home.pointerCursor.size}
+  '';
 }

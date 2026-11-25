@@ -34,9 +34,29 @@
   systemd.services.polkit.serviceConfig.ExecStartPost =
     "+-${pkgs.systemd}/bin/systemctl --user -M ${user}@ --no-block try-restart hyprpolkitagent.service";
 
+  # Единый диалог выбора файлов: всё, что идёт через портал (Flatpak, AppImage, GTK4, Chromium/Electron),
+  # получает GTK-диалог хоста. Маршруты в секции hyprland: hyprland-portals.conf из xdph
+  # перебивает common, а файл из /etc/xdg побеждает файл из пакета.
+  # Plasma читает свой kde-portals.conf и этим не затрагивается
   xdg.portal = {
     enable = true;
+    xdgOpenUsePortal = true;
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    config = {
+      hyprland = {
+        default = [
+          "hyprland"
+          "gtk"
+        ];
+        "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
+        "org.freedesktop.impl.portal.ScreenCast" = [ "hyprland" ];
+        "org.freedesktop.impl.portal.Screenshot" = [ "hyprland" ];
+      };
+      common = {
+        default = [ "gtk" ];
+        "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
+      };
+    };
   };
 
   environment.systemPackages = with pkgs; [
@@ -67,5 +87,9 @@
 
   services.printing.enable = true;
 
-  environment.sessionVariables.NIXOS_OZONE_WL = "1"; # Electron/Chromium (VSCode и т.п.) нативно на Wayland
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1"; # Electron/Chromium (VSCode и т.п.) нативно на Wayland
+    # кодеки GStreamer для Showtime, Loupe и превью в Nemo
+    GST_PLUGIN_SYSTEM_PATH_1_0 = "/run/current-system/sw/lib/gstreamer-1.0";
+  };
 }

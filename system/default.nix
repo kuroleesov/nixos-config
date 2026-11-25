@@ -13,5 +13,6 @@
     ./apps.nix
     ./packages.nix
     ./shell.nix
+    ./compat.nix
   ];
 }
