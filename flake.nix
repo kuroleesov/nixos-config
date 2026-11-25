@@ -37,6 +37,12 @@
       url = "github:repinek/osu-lazer-flake";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+
+    # NixOwOS: uwu-логотипы и имя дистрибутива (os-release, fastfetch, hyfetch)
+    nixowos = {
+      url = "github:yunfachi/nixowos";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -60,6 +66,9 @@
           modules = [
             ./hosts/${host}
             inputs.claude-desktop.nixosModules.default
+            # HM-модуль nixowos не нужен: при useGlobalPkgs оверлеи приходят отсюда
+            inputs.nixowos.nixosModules.default
+            { nixowos.enable = true; }
             inputs.home-manager.nixosModules.home-manager
             {
               home-manager = {
