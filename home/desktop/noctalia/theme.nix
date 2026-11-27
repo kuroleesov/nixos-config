@@ -1,10 +1,14 @@
 # Тема Noctalia, обои и пользовательские шаблоны (fastfetch, kitty, обои)
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 let
   cfgDir = "${config.xdg.configHome}/noctalia/wallpaper";
+
+  # true — генерируемые обои assets/wallpapers/nix-wallpaper.svg в цветах темы (перебивают выбор при каждой смене темы);
+  # false — свои обои через Super + W (по умолчанию из ~/Pictures), выбор хранится в ~/.local/state/noctalia/settings.toml
+  nixWallpaper = false;
 in
 {
-  home.packages = [ pkgs.librsvg ];
+  home.packages = lib.optional nixWallpaper pkgs.librsvg;
 
   programs.noctalia.settings = {
     theme = {
@@ -46,7 +50,7 @@ in
             output_path = "~/.config/kitty/themes/noctalia.conf";
           };
 
-          wallpaper = {
+          wallpaper = lib.mkIf nixWallpaper {
             input_path = "templates/nix-wallpaper.svg";
             output_path = "wallpaper/noctalia-wallpaper.svg";
 
@@ -65,10 +69,10 @@ in
       };
     };
 
-    # Картинка генерируется из шаблона wallpaper
+    # С nixWallpaper картинка генерируется из шаблона wallpaper
     wallpaper = {
       fill_mode = "crop";
-      default.path = "${cfgDir}/latest.png";
+      default = lib.mkIf nixWallpaper { path = "${cfgDir}/latest.png"; };
 
       transition = [
         "disc"
@@ -82,6 +86,8 @@ in
     "noctalia/templates/fastfetch.jsonc".source = ./templates/fastfetch.jsonc;
     "noctalia/templates/kitty.conf".source =
       "${pkgs.noctalia}/share/noctalia/assets/templates/kitty/kitty.conf";
-    "noctalia/templates/nix-wallpaper.svg".source = ../../../assets/wallpapers/nix-wallpaper.svg;
+    "noctalia/templates/nix-wallpaper.svg" = lib.mkIf nixWallpaper {
+      source = ../../../assets/wallpapers/nix-wallpaper.svg;
+    };
   };
 }

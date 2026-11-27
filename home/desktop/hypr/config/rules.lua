@@ -28,5 +28,7 @@ hl.window_rule({ match = { class = "^(librewolf)$", title = "^(Picture-in-Pictur
 hl.window_rule({ match = { class = "^(thunar)$", title = "^(File Operation Progress)$" }, float = true })
 
 hl.window_rule({ match = { class = "^kitty$" }, float = true, size = { 1100, 650 } })
+-- AyuGram: тихо открывается на special:magic (как OBS), плавающий, фиксированного размера и позиции
+hl.window_rule({ match = { class = "^com.ayugram.desktop$" }, workspace = "special:magic silent" })
 hl.window_rule({ match = { class = "^com.ayugram.desktop$" }, float = true, size = { 450, 1000 }, move = { 1000, 196 } })
 hl.window_rule({ match = { class = "^GStreamer$" }, float = true, move = { 1000, 196 } })
