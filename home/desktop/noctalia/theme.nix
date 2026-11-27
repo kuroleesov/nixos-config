@@ -1,4 +1,4 @@
-# Тема Noctalia, обои и пользовательские шаблоны (fastfetch, kitty, обои)
+# Тема Noctalia, обои и пользовательские шаблоны (fastfetch, kitty, vysh, обои)
 { config, lib, pkgs, ... }:
 let
   cfgDir = "${config.xdg.configHome}/noctalia/wallpaper";
@@ -6,6 +6,31 @@ let
   # true — генерируемые обои assets/wallpapers/nix-wallpaper.svg в цветах темы (перебивают выбор при каждой смене темы);
   # false — свои обои через Super + W (по умолчанию из ~/Pictures), выбор хранится в ~/.local/state/noctalia/settings.toml
   nixWallpaper = false;
+
+  # Шаблон ~/.config/vysh/colors.json (формат docs/THEMES.md в vysh): .default — роли текущего режима Noctalia,
+  # поэтому одинаковые для dark и light; недостающие роли M3 vysh достраивает из seed
+  color = name: "{{colors.${name}.default.hex}}";
+  roles = lib.genAttrs [
+    "primary" "on_primary" "primary_container" "on_primary_container"
+    "secondary" "on_secondary" "secondary_container" "on_secondary_container"
+    "tertiary" "on_tertiary" "tertiary_container" "on_tertiary_container"
+    "error" "on_error" "error_container" "on_error_container"
+    "surface" "on_surface" "on_surface_variant" "inverse_surface"
+    "surface_container_lowest" "surface_container_low" "surface_container"
+    "surface_container_high" "surface_container_highest"
+    "outline" "outline_variant"
+  ] color;
+  ansi = [ "black" "red" "green" "yellow" "blue" "magenta" "cyan" "white" ];
+  vyshColors = builtins.toJSON {
+    seed = color "primary";
+    dark = roles;
+    light = roles;
+    terminal = {
+      background = color "terminal_background";
+      foreground = color "terminal_foreground";
+      colors = map (c: color "terminal_normal_${c}") ansi ++ map (c: color "terminal_bright_${c}") ansi;
+    };
+  };
 in
 {
   home.packages = lib.optional nixWallpaper pkgs.librsvg;
@@ -50,6 +75,12 @@ in
             output_path = "~/.config/kitty/themes/noctalia.conf";
           };
 
+          # vysh в режиме «Из дотов» сам читает этот путь и обновляет цвета при каждой записи файла
+          vysh = {
+            input_path = "templates/vysh.json";
+            output_path = "~/.config/vysh/colors.json";
+          };
+
           wallpaper = lib.mkIf nixWallpaper {
             input_path = "templates/nix-wallpaper.svg";
             output_path = "wallpaper/noctalia-wallpaper.svg";
@@ -86,6 +117,7 @@ in
     "noctalia/templates/fastfetch.jsonc".source = ./templates/fastfetch.jsonc;
     "noctalia/templates/kitty.conf".source =
       "${pkgs.noctalia}/share/noctalia/assets/templates/kitty/kitty.conf";
+    "noctalia/templates/vysh.json".text = vyshColors;
     "noctalia/templates/nix-wallpaper.svg" = lib.mkIf nixWallpaper {
       source = ../../../assets/wallpapers/nix-wallpaper.svg;
     };

@@ -43,6 +43,12 @@
       url = "github:yunfachi/nixowos";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # SSH-менеджер; новая версия приходит с релизом через `nix flake update vysh`
+    vysh = {
+      url = "github:vyto4ka/vysh";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

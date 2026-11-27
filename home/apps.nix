@@ -1,6 +1,8 @@
-# Прикладные программы: Anki, KeePassXC, LibreOffice, мессенджеры, торренты и утилиты
-{ pkgs, ... }:
+# Прикладные программы: Anki, KeePassXC, LibreOffice, мессенджеры, торренты, vysh (SSH) и утилиты
+{ pkgs, inputs, ... }:
 {
+  imports = [ inputs.vysh.homeModules.default ];
+
   home.packages = [
     pkgs.unstable.libreoffice-qt-stable
     pkgs.kdePackages.filelight
@@ -56,6 +58,9 @@
   };
 
   programs.keepassxc.enable = true;
+
+  # пароли хостов хранит в Secret Service (gnome-keyring включён в system/desktop.nix)
+  programs.vysh.enable = true;
 
   # при первом запуске Element нужен флаг --password-store=gnome-libsecret
   programs.element-desktop.enable = true;

@@ -28,11 +28,11 @@
       },
       "locked": {
         "dir": "pkgs/firefox-addons",
-        "lastModified": 1795492993,
-        "narHash": "sha256-ahWady3zaDLyXbXZMMzzyw6eKdXlCJ1DBrShCCHjMB8=",
+        "lastModified": 1795752180,
+        "narHash": "sha256-l0tlHWpr+cfhywPFxSf3AJSMFyduSS0FVNQNpVD5yJk=",
         "owner": "rycee",
         "repo": "nur-expressions",
-        "rev": "d30aafe71a6b68888bec56a1ec030494b69da61e",
+        "rev": "2f59f0fdf9105ba4ffd752672445af8cc53e7419",
         "type": "gitlab"
       },
       "original": {
@@ -49,11 +49,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1795366757,
-        "narHash": "sha256-Tp4Kh4R7ID1f2mMCDlb2PiFQ/DZZsnXB2u2juWN+TT4=",
+        "lastModified": 1795748630,
+        "narHash": "sha256-J1iQ1QMnkFwZFXnlPt2t3Qx7TsGjw08/0L3QMqNt+Wg=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "3b8140d21fa0a70b1b38c2ed29853dfe686234a6",
+        "rev": "54f903fdaaf5d5720ed36706fe75332af69eb793",
         "type": "github"
       },
       "original": {
@@ -70,11 +70,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1795452473,
-        "narHash": "sha256-+dkmA2eGitfck7NXxkm8n6QL1+tTKrt7ifDwfdC2EBI=",
+        "lastModified": 1795781719,
+        "narHash": "sha256-rHZ4wvpMS0UhQP4rBVMM4s6dVEHMvN7CxaiKTVwvofg=",
         "owner": "Lemonochka",
         "repo": "keqdroid",
-        "rev": "e65096ab5d531c298494e55c06a6459b689ff774",
+        "rev": "d54eac074edba0fd80d5bcefea265798a47ecb81",
         "type": "github"
       },
       "original": {
@@ -172,7 +172,28 @@
         "nixpkgs-unstable": [
           "nixpkgs"
         ],
-        "osu-lazer": "osu-lazer"
+        "osu-lazer": "osu-lazer",
+        "vysh": "vysh"
+      }
+    },
+    "vysh": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1795729819,
+        "narHash": "sha256-2EVVyqC3huugPtDGZw7pxmbviVirKeygk0eiHcyLJ0U=",
+        "owner": "vyto4ka",
+        "repo": "vysh",
+        "rev": "33f9174b86c77752e3c64eccc9f3c90087798a3c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vyto4ka",
+        "repo": "vysh",
+        "type": "github"
       }
     }
   },
