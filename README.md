@@ -1,253 +1,175 @@
 # NixOS Configuration
 >**Warning** These dotfiles were mostly vibecoded, so be careful.
 
-A personal NixOS setup built around **Hyprland**, **Noctalia**, and **Fish**.
+My NixOS flake: Hyprland with the Noctalia shell, Fish, Home Manager. It's built for my own machines, so read through it before running it on yours.
 
-> This configuration is provided as-is. It was built primarily for personal use, so review the scripts and configuration before applying them to your system.
-
-This guide explains how to deploy the configuration on an **existing NixOS installation**. It does not cover installing NixOS itself.
+The guide assumes NixOS is already installed and working. It replaces system packages and settings, so back up anything you care about first.
 
 ## Requirements
 
-- An existing, working NixOS installation.
-- An Intel or AMD 64-bit system. ARM and Apple Silicon are not supported by this configuration.
-- At least 8 GB of RAM.
-- At least 100 GB of available disk space is recommended. The full software set is fairly large and includes applications such as Steam and DaVinci Resolve.
-- A reliable internet connection. The initial build may download more than 10 GB of data.
-- Approximately one to two hours for the initial setup. Some packages may need to be built locally.
-
-> **Important:** Applying this configuration changes system-level settings and installs or replaces packages. Back up important data and review the configuration before proceeding.
+- x86_64 (Intel or AMD). ARM is not supported.
+- 8 GB of RAM or more.
+- Around 100 GB of free disk space. The package set includes Steam and DaVinci Resolve.
+- The first build downloads over 10 GB and compiles some packages locally. Plan for an hour or two.
 
 ## Installation
 
-### 1. Open a terminal
-
-Log in to your existing NixOS installation and open a terminal.
-
-### 2. Make Git available
-
-Run:
-
 ```bash
 nix-shell -p git
-```
-
-Wait until the shell prompt changes to indicate that the temporary environment is active.
-
-### 3. Clone the repository
-
-```bash
 git clone https://github.com/kuroleesov/nixos-config.git ~/nixos-config
-```
-
-If the directory already exists, the repository has likely been cloned before. You can continue to the next step.
-
-### 4. Enter the repository directory
-
-```bash
 cd ~/nixos-config
-```
-
-### 5. Run the installer
-
-```bash
 ./install.sh
 ```
 
-The installer will ask for a few details:
+Run `install.sh` as your normal user, without `sudo`. It calls `sudo` itself when it needs to. It asks for:
 
-| Prompt | What to enter |
+| Prompt | Answer |
 |---|---|
-| `Hostname [...]:` | Choose a hostname, for example `workstation`. Use lowercase Latin letters, numbers, and hyphens only. |
-| `Username [your-user]:` | Press `Enter` to use the current default, provided it matches your existing NixOS username. |
-| `Create hosts/... for user ...? [y/N]` | Enter `y` and press `Enter`. |
-| `[sudo] password for ...:` | Enter your user password. The terminal will not display characters while you type; this is expected. |
+| `Hostname [...]` | Lowercase letters, digits and hyphens, e.g. `workstation` |
+| `Username [...]` | Your existing NixOS user. The default is the current user. |
+| `Create hosts/... for user ...? [y/N]` | `y` |
+| `[sudo] password` | Your password. It may be asked more than once during the build. |
 
-The initial build can take a while because packages may need to be downloaded and compiled. Keep the terminal open and do not shut down the computer while the process is running.
-
-The installer may request your password again during the process. Enter the same password when prompted.
-
-When the installer reports that the system configuration has been applied successfully, reboot:
-
-```bash
-reboot
-```
+When it finishes, reboot.
 
 ## First login
 
-- At the login screen, enter your password.
-- The default session is **Hyprland (UWSM)**.
-- If Hyprland does not start correctly, use the session selector to choose **Plasma** as a fallback desktop environment.
-- **Super** refers to the Windows key on most keyboards.
+The login screen is ly, and the default session is Hyprland (UWSM). If Hyprland doesn't start, pick Plasma in the session list.
 
-### Keyboard shortcuts
+### Keybindings
 
-| Shortcut | Action |
+`Super` is the Windows key.
+
+| Keys | Action |
 |---|---|
-| `Super + Enter` or `Super + Q` | Open the terminal |
-| `Super + Space` (or `R`, `D`) | Search for and launch applications |
-| `Super + B` | Open the browser |
-| `Super + E` | Open the file manager |
-| `Super + C` | Close the active window |
-| `Super + F` | Toggle fullscreen |
-| `Super + V` | Toggle floating mode for the active window |
-| `Super + 1` … `Super + 0` | Switch to workspaces 1–10 |
-| `Super + Shift + number` | Move the active window to another workspace |
-| `Super + arrow keys` | Focus an adjacent window |
-| `Super + Shift + arrow keys` | Move the active window |
-| `Super + Ctrl + arrow keys` | Resize the active window |
-| `Super + A` | Open the control center (audio, network, Bluetooth) |
-| `Super + N` | Open notifications |
-| `Super + W` | Open wallpaper controls |
-| `Super + ,` | Open panel settings |
-| `Super + L` | Lock the screen |
-| `Super + X` | Open power options |
-| `Super + Shift + E` | Exit the current session immediately |
-| `Print` | Capture a selected screen area; `Ctrl + Print` captures the full screen |
-| `Alt + Shift` | Switch keyboard layout (English / Russian) |
+| `Super + Enter`, `Super + Q` | Terminal (Kitty) |
+| `Super + Space`, `Super + D` | App launcher |
+| `Super + B` / `Super + E` | Browser / file manager |
+| `Super + M` | btop |
+| `Super + C` | Close window |
+| `Super + F` | Fullscreen |
+| `Super + V` | Toggle floating |
+| `Super + 1` … `Super + 0` | Go to workspace 1-10 |
+| `Super + Shift + 1` … `0` | Move window to workspace |
+| `Super + arrows` | Focus window |
+| `Super + Shift + arrows` | Move window |
+| `Super + Ctrl + arrows` | Resize window |
+| `Super + S` / `Super + Shift + S` | Show / move window to the scratchpad workspace |
+| `Super + Tab` | Window switcher |
+| `Super + A` | Control center (audio, network, Bluetooth) |
+| `Super + N` | Notifications |
+| `Super + Shift + V` | Clipboard history |
+| `Super + W` | Wallpapers |
+| `Super + ,` | Noctalia settings |
+| `Super + L` | Lock |
+| `Super + X` | Power menu |
+| `Super + Shift + E` | Quit Hyprland |
+| `Print` / `Ctrl + Print` | Screenshot of a region / the whole screen |
+| `Shift + Print` | Region screenshot opened in Satty |
+| `Alt + Shift` | Switch layout (US / RU) |
 
-## Personalizing the configuration
+All bindings are in `home/desktop/hypr/config/keybinds.lua`.
 
-The configuration contains some personal defaults. You may want to adjust them after installation.
+## Shell aliases
 
-Open the repository in VS Code with:
-
-```bash
-ncode
-```
-
-Common settings:
-
-- **Timezone and locale:** `system/locale.nix`. The current defaults use Moscow time, an English interface, and Russian date and number formats.
-- **Location for weather and night-light features:** `home/desktop/noctalia/default.nix`, in the `location` section.
-- **System packages:** `system/packages.nix`. Remove entries for applications you do not need, such as Discord, Spotify, or DaVinci Resolve.
-- **Application-specific configuration:** `home/apps.nix`, `home/media.nix`, `home/games.nix` (including osu! and Steam Guard), and `home/editors.nix` (Zed).
-- **Hyprland keybindings:** `home/desktop/hypr/config/keybinds.lua`. Changes can be applied immediately with `hr`; a full system rebuild is not required.
-
-After editing Nix configuration files, apply the changes with:
-
-```bash
-rebuild
-```
-
-## Useful commands
-
-| Command | Description |
+| Alias | Runs |
 |---|---|
-| `rebuild` | Apply the current configuration |
-| `upd` | Update all inputs and apply the updated configuration |
-| `rbt` | Test configuration changes before rebooting, without modifying the boot menu |
-| `ndiff` | Show changes since the previous `rebuild` |
-| `nclean` | Remove old system generations and free disk space |
-| `ncode` | Open the configuration in VS Code |
+| `rebuild` | `nh os switch`: build and apply |
+| `rbt` | `nh os test`: apply without adding a boot entry |
+| `upd` | `nh os switch --update`: update `flake.lock`, then apply |
+| `ndiff` | Package diff between the last two generations |
+| `nclean` | Delete old generations (keeps 5 and anything from the last 7 days) |
+| `dt` | `cd` into the repo |
+| `nconf` / `ncode` | Open the repo in Neovim / VS Code |
+| `hconf` | Open `hyprland.lua` in Neovim |
+| `hr` | `hyprctl reload` |
 
-### Rolling back a change
+If a `rebuild` breaks the system, reboot and pick the previous generation in the boot menu.
 
-If the system stops working after running `rebuild` or `upd`, reboot the computer.
+## Things you'll probably want to change
 
-When the boot menu appears, press an arrow key to stop the countdown. Select the previous NixOS generation using the arrow keys and press `Enter`. This starts the previously working system generation.
+- Timezone and locale: `system/locale.nix`. Currently Europe/Moscow, English UI, Russian formats for dates, numbers and units.
+- System packages: `system/packages.nix`. Drop whatever you don't use (Discord, Spotify, DaVinci Resolve, ...).
+- User apps: `home/apps.nix`, `home/media.nix`, `home/games.nix` (osu!, Steam Guard), `home/editors.nix` (Zed).
+- Hyprland: anything under `home/desktop/hypr/`. These files are symlinked, so `hr` picks up changes without a rebuild.
+- Personal data goes in `private/`, which is gitignored. Fish sources `private/*.fish`, Git includes `private/gitconfig`, and Noctalia reads the weather/night light location from `private/noctalia.toml`:
+
+  ```toml
+  [location]
+  address = "City"
+  latitude = 55.75
+  longitude = 37.62
+  ```
+
+  Missing files are skipped. Copy the folder by hand when moving to another machine.
+
+To install something, add it to `system/packages.nix` (system-wide) or to a `home.packages` list under `home/` (per user). If NixOS or Home Manager has a `programs.<name>` module for it, use that instead.
 
 ## Troubleshooting
 
-- **`Error: this script only works on NixOS`** — Run the installer from an existing NixOS installation.
-- **`Error: run without sudo`** — Start the script as your regular user with `./install.sh`. Do not prefix the command with `sudo`; the script will request elevated permissions when needed.
-- **`nix-shell: command not found` or `git: command not found`** — Make sure you are running NixOS and have started the temporary Git environment with `nix-shell -p git`.
-- **The installation was interrupted** (for example, because of a build error or lost internet connection) — Open a terminal and run the installer again. It is designed to resume the setup:
-  ```bash
-  cd ~/nixos-config
-  ./install.sh
-  ```
-- **`Error: invalid hostname`** — Hostnames must not contain uppercase letters, spaces, or underscores. Use a name such as `workstation` or `my-pc`.
-- **A black screen appears after reboot** — This can happen with some NVIDIA configurations. Reboot and select the previous NixOS generation from the boot menu, or choose **Plasma** at the login screen.
-- **An older NVIDIA GPU is not working** (GTX 600/700 series and older) — These GPUs require the `legacy_470` driver. The installer does not select it automatically. In `hosts/<hostname>/default.nix`, replace `legacy_580` with `legacy_470`, then run `rebuild`.
-- **Running inside a virtual machine** — Hyprland requires 3D acceleration. Enable it in your VM settings. If it still does not work, use **Plasma**.
-- **A downloaded program fails with `error while loading shared libraries: libXXX.so`** — Find the package with `nix-locate libXXX.so`, add it to `programs.nix-ld.libraries` in `system/compat.nix`, run `rebuild`, and log in again.
-- **Adding an AppImage to the app menu** — Right-click the file in Nemo and choose **Добавить в меню приложений**. The image stays where it is; to launch it from a terminal, use `appimage-run <file>`.
+`this script only works on NixOS`: install NixOS first. This repo doesn't do the base install.
 
-## For advanced users
+`run without sudo`: start it as `./install.sh`.
 
-### What `install.sh` does
+`invalid hostname`: no uppercase, spaces or underscores.
 
-The installer detects the system hardware and creates a host configuration under `hosts/<hostname>/`.
+The install got interrupted: run `./install.sh` again. It reuses the existing `hosts/<hostname>/`.
 
-- **GPU detection:** Selects the NVIDIA, AMD, or Intel configuration from `system/hardware/<nvidia|amd|intel>.nix`. For NVIDIA GPUs older than Turing (before RTX 20xx / GTX 16xx), it disables open kernel modules and selects the `legacy_580` driver. Kepler-generation GPUs and older require `legacy_470`, which must be configured manually. On laptops with both NVIDIA and integrated graphics, it configures PRIME offload (`nvidia-offload <program>`). On desktops, it configures the discrete GPU.
-- **Bootloader detection:** Uses systemd-boot on UEFI systems and GRUB on legacy BIOS systems, targeting the physical disk containing the root filesystem (including LUKS/LVM/btrfs setups).
-- **Bluetooth:** Enables Bluetooth support when compatible hardware is detected.
-- **Virtualization:** Detects QEMU/KVM, VirtualBox, and VMware, then enables the corresponding guest drivers.
-- **Hardware configuration:** Generates `hardware-configuration.nix` using `nixos-generate-config`. It determines `system.stateVersion` from the existing `/etc/nixos/configuration.nix` when possible, otherwise using the current version.
+Black screen after reboot: usually NVIDIA. Boot the previous generation, or log into Plasma.
 
-After generating the host configuration, the installer applies the configuration, copies the repository to `/home/<user>/nixos-config`, and sets the user's password if one is not already configured.
+GTX 600/700 or older: the installer picks `legacy_580` for pre-Turing cards, but Kepler needs `legacy_470`. Change it in `hosts/<hostname>/default.nix` and run `rebuild`. It may not build with a recent kernel.
 
-If `hosts/<hostname>/` already exists, the installer preserves its `default.nix` and `meta.nix` files and applies the existing host configuration. It regenerates `hardware-configuration.nix` only when using `--root`.
+Virtual machine: Hyprland needs 3D acceleration enabled in the VM settings. Use Plasma if it still fails.
 
-### Installer options
+`error while loading shared libraries: libXXX.so` from a downloaded binary: find the package with `nix-locate libXXX.so`, add it to `programs.nix-ld.libraries` in `system/compat.nix`, rebuild and log in again.
 
-| Option | Description |
+AppImages: right-click in Nemo and choose "Добавить в меню приложений" to get a menu entry. The file stays where it is. From a terminal, run `appimage-run <file>`.
+
+## How install.sh works
+
+It inspects the hardware and writes `hosts/<hostname>/`:
+
+- GPU: imports `system/hardware/{nvidia,amd,intel}.nix`. NVIDIA cards older than Turing get the proprietary `legacy_580` driver instead of the open modules. Laptops with NVIDIA plus an iGPU get PRIME offload (`nvidia-offload <program>`); desktops use only the discrete card.
+- Bootloader: systemd-boot on UEFI, GRUB on BIOS, installed to the disk that holds `/` (resolved through LUKS/LVM/btrfs).
+- Bluetooth is enabled if an adapter is found.
+- Guest tools for QEMU/KVM, VirtualBox or VMware when running in a VM.
+- `hardware-configuration.nix` comes from `nixos-generate-config`. `system.stateVersion` is taken from `/etc/nixos/configuration.nix` if it exists, otherwise the current release.
+
+Then it applies the config, copies the repo to `/home/<user>/nixos-config`, and runs `passwd` if the user has no password yet.
+
+An existing `hosts/<hostname>/` is kept as is. `hardware-configuration.nix` is only regenerated with `--root`.
+
+| Flag | Effect |
 |---|---|
-| `--host <name>` | Set the hostname without an interactive prompt |
-| `--user <name>` | Set the username without an interactive prompt |
-| `--root /mnt` | Target an already-mounted system root |
-| `--dry-run` | Show the files and changes that would be generated without applying them |
-| `--no-apply` | Generate configuration files without applying the configuration |
-| `--yes` | Skip interactive confirmation prompts |
+| `--host <name>` | Hostname, no prompt |
+| `--user <name>` | Username, no prompt |
+| `--root /mnt` | Install into a mounted system via `nixos-install` |
+| `--dry-run` | Print what would be generated, write nothing |
+| `--no-apply` | Write `hosts/<hostname>/` but don't build |
+| `--yes` | No confirmation |
 
-The installer can be tested against simulated hardware with:
+`scripts/test-install.sh` runs the installer against fake hardware.
 
-```bash
-scripts/test-install.sh
-```
-
-### Repository structure
+## Layout
 
 ```text
-nixos-config/
-├── flake.nix                     # Flake inputs and host builds
-├── hosts/                        # Per-machine configuration
-│   └── <hostname>/
-│       ├── default.nix           # Host-specific system configuration
-│       ├── meta.nix              # Host metadata, including username
-│       └── hardware-configuration.nix
-├── system/                       # System-wide NixOS configuration
-│   ├── hardware/                 # GPU drivers and hardware modules
-│   ├── nix.nix                   # Nix settings, overlays, nh
-│   ├── compat.nix                # nix-ld, AppImage, /usr/share/* for non-Nix software
-│   ├── boot.nix                  # Kernel, bootloader settings, ly
-│   ├── desktop.nix               # Hyprland, Plasma fallback, portals, GStreamer
-│   ├── fonts.nix                 # System fonts
-│   ├── audio.nix                 # PipeWire
-│   ├── network.nix               # Networking, firewall, Avahi/UxPlay, Throne
-│   ├── games.nix                 # Steam and GameMode
-│   ├── apps.nix                  # Firefox, Claude Desktop, Flatpak, etc.
-│   ├── packages.nix              # System package list
-│   ├── locale.nix                # Locale and timezone
-│   ├── users.nix                 # User accounts
-│   └── shell.nix                 # System-level Fish configuration
-├── home/                         # Home Manager configuration
-│   ├── shell/                    # Fish, aliases, Starship, Git, CLI tools
-│   ├── desktop/
-│   │   ├── hypr/                 # Hyprland configuration (Lua)
-│   │   ├── noctalia/             # Noctalia configuration
-│   │   ├── nemo-appimage.nix     # Nemo context menu for AppImages
-│   │   └── theme.nix             # GTK/Qt, cursor, global Flatpak overrides
-│   ├── browsers/                 # LibreWolf and Chromium
-│   ├── terminals.nix             # Kitty and Alacritty
-│   ├── editors.nix               # Zed
-│   ├── apps.nix                  # Desktop applications
-│   ├── media.nix                 # Media applications
-│   ├── games.nix                 # Games and related configuration
-│   └── cli.nix                   # Command-line applications
-├── pkgs/                         # Custom packages
-│   └── il2cpp-inspector-redux/
-├── assets/                       # Wallpapers and ly animations
-├── scripts/
-│   ├── update.sh                 # Update inputs, check, and rebuild
-│   └── test-install.sh           # Test installer against simulated hardware
-└── private/                      # Local, untracked personal settings
+flake.nix              inputs and host outputs
+hosts/<hostname>/      default.nix, meta.nix (username), hardware-configuration.nix
+system/                NixOS modules
+  hardware/            GPU drivers
+  boot.nix             kernel, bootloader, ly
+  desktop.nix          Hyprland, Plasma, portals
+  compat.nix           nix-ld, AppImage support
+  network.nix          firewall, Avahi/UxPlay, Throne
+  packages.nix         system packages
+  ...                  audio, fonts, games, apps, locale, users, shell, nix
+home/                  Home Manager
+  shell/               Fish, aliases, Starship, Git
+  desktop/             Hyprland (Lua), Noctalia, Nemo, GTK/Qt theme
+  browsers/            LibreWolf, ungoogled-chromium
+  ...                  terminals, editors, apps, media, games, cli
+pkgs/                  local packages (il2cpp-inspector-redux)
+assets/                wallpapers, ly animation
+scripts/               update.sh, test-install.sh
+private/               gitignored personal files
 ```
-
-### Configuration notes
-
-- **Adding an application:** Add a package to `system/packages.nix` for a system-wide installation, or to the appropriate `home.packages` list in `home/` for a user-level installation. For applications with NixOS or Home Manager options, configure the relevant `programs.<name>` block in the appropriate module.
-- **Hyprland:** Files in `home/desktop/hypr/` are linked into the active configuration. Most changes can be applied immediately with `hr` (`hyprctl reload`) without rebuilding the system.
-- **Personal settings:** Machine-specific details such as server addresses, personal functions, Git identity, and location belong in `private/`. Fish loads `*.fish` files at startup, Git uses `gitconfig`, and Noctalia reads `noctalia.toml` for location-related settings such as weather and night light. This directory is listed in `.gitignore` and is not committed to the repository. Copy it manually when setting up another machine.
-- **Opening configuration files:** Use `nconf` for Neovim, `ncode` for VS Code, `hconf` for the Hyprland Lua configuration, or `dt` to change to the repository directory.
