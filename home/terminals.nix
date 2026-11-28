@@ -14,7 +14,7 @@
       confirm_os_window_close = 0;
       hide_window_decorations = "yes"; # рамки рисует Hyprland
       window_padding_width = 10;
-      background_opacity = "0.92"; # + blur из Hyprland
+      background_opacity = "0.8"; # + blur из Hyprland
       dynamic_background_opacity = "yes"; # Ctrl+Shift+A, затем M/L — прозрачность на лету
       remember_window_size = "no";
       initial_window_width = "120c";

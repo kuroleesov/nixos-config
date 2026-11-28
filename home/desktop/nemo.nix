@@ -17,7 +17,7 @@
 
   dconf.settings = {
     "org/cinnamon/desktop/applications/terminal" = {
-      exec = "alacritty";
+      exec = "kitty";
       exec-arg = "-e";
     };
 

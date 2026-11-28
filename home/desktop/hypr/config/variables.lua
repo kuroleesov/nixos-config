@@ -8,7 +8,7 @@ return {
     main_mod = "SUPER",
 
     file_manager = "nemo",
-    terminal = "alacritty",
+    terminal = "kitty",
     browser = "librewolf",
 
     hyprpicker = "hyprpicker --autocopy --no-fancy --render-inactive --scale=8",
