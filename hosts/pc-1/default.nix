@@ -1,5 +1,5 @@
 # pc-1: i5-12400F (без встроенной графики), RTX 4060, мониторы DP-2 + HDMI-A-1
-{ user, ... }:
+{ config, user, ... }:
 
 {
   imports = [
@@ -29,6 +29,19 @@
     script = "echo detect > /sys/class/drm/card*-HDMI-A-1/status";
     preStop = "echo off > /sys/class/drm/card*-HDMI-A-1/status";
   };
+
+  # RTX 4060 в простое падает до 210 МГц и разгоняется только через 0.5–1 с,
+  # поэтому анимация переключения воркспейсов шла на холодной карте и фризила.
+  # Нижняя граница 1000 МГц, верхнюю не ограничиваем; в простое карта ест на несколько ватт больше
+  systemd.services.gpu-min-clock = {
+    description = "Lock NVIDIA minimum graphics clock";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "lactd.service" ];
+    serviceConfig.Type = "oneshot";
+    script = "${config.hardware.nvidia.package.bin}/bin/nvidia-smi --lock-gpu-clocks=1000,3000";
+  };
+  # shortcut: не проверял, сбрасывает ли сон блокировку частот; переприменяем после пробуждения на всякий случай
+  powerManagement.resumeCommands = "systemctl restart --no-block gpu-min-clock.service";
 
   networking.hostName = "pc-1";
 
