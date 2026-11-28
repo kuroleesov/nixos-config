@@ -77,6 +77,9 @@
 
       # cheat cmd — шпаргалка по команде
       cheat = ''curl -s "cheat.sh/$argv[1]"'';
+
+      # omp всегда стартует в ~/Projects; папка самого терминала не меняется
+      omp = "env -C ~/Projects omp $argv";
     };
   };
 
